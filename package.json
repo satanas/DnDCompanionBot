@@ -1,0 +1,20 @@
+{
+  "name": "DnDBot",
+  "description": "A bot to play D&D in Telegram",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satanas/DnDBot.git"
+  },
+  "keywords": [
+    "python",
+    "aws",
+    "lambda",
+    "serverless"
+  ],
+  "author": "Wil Alvarez",
+  "license": "MIT",
+  "dependencies": {
+    "serverless-python-requirements": "^3.0.9"
+  }
+}
