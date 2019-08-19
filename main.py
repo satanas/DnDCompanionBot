@@ -20,7 +20,11 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 FIREBASE_API_SECRET = os.environ.get('FIREBASE_API_SECRET')
 auth = firebase.FirebaseAuthentication(FIREBASE_API_SECRET, 'wil.alejandro@gmail.com')
-firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=auth)
+firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=None)
+
+# https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
+results = firebase_db.get('/', 'campaigns', params={'orderBy': '\"chat_id\"', 'equalTo': 3383241, 'auth': FIREBASE_API_SECRET})
+print(results)
 
 OK_RESPONSE = {
     'statusCode': 200,
@@ -31,24 +35,6 @@ ERROR_RESPONSE = {
     'statusCode': 400,
     'body': json.dumps('Oops, something went wrong!')
 }
-
-#TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-#if not TELEGRAM_TOKEN:
-#    logger.error('The TELEGRAM_TOKEN must be set')
-#    raise NotImplementedError
-#
-#updater = Updater(token=TELEGRAM_TOKEN)
-#dispatcher = updater.dispatcher
-#
-#def start(bot, update, **args):
-#    bot.send_message(chat_id=update.message.chat_id, text="Welcome to Dungeons and Dragons on Telegram.")
-#
-#start_cmd = CommandHandler('start', start)
-#roll_cmd = CommandHandler('roll', roll_handler)
-#
-#dispatcher.add_handler(start_cmd)
-#dispatcher.add_handler(roll_cmd)
-
 
 
 def configure_telegram():
@@ -109,6 +95,3 @@ def set_webhook(event, context):
         return OK_RESPONSE
 
     return ERROR_RESPONSE
-
-#if __name__ == "__main__":
-#    updater.start_polling()
