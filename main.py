@@ -5,6 +5,7 @@ import telegram
 
 from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
+from help import handler as help_handler
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -78,6 +79,8 @@ def webhook(event, context):
             roll_handler(bot, update)
         elif text.startswith('/charsheet'):
             charsheet_handler(bot, update)
+        elif text.startswith('/help'):
+            help_handler(bot, update)
 
         return OK_RESPONSE
 
