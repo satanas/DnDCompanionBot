@@ -6,7 +6,6 @@ DICE_ROLL_PATTERN = re.compile('(\d+?d\d{1,3}|\d+?d%)([+-])*(\d+)*')
 # Method to be invoked by telegram
 def handler(bot, update, **args):
     print(update)
-    print(args)
     username = f"@{update.message.from_user.username}" if update.message.from_user.username else update.message.from_user.first_name
 
     expression = update.message.text.strip().replace('/roll ', '')

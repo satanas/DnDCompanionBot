@@ -1,9 +1,11 @@
 import os
 import json
 import logging
-
 import telegram
+
 from roll import handler as roll_handler
+from charsheet import handler as charsheet_handler
+
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
@@ -24,22 +26,22 @@ ERROR_RESPONSE = {
     'body': json.dumps('Oops, something went wrong!')
 }
 
-TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-if not TELEGRAM_TOKEN:
-    logger.error('The TELEGRAM_TOKEN must be set')
-    raise NotImplementedError
-
-updater = Updater(token=TELEGRAM_TOKEN)
-dispatcher = updater.dispatcher
-
-def start(bot, update, **args):
-    bot.send_message(chat_id=update.message.chat_id, text="Welcome to Dungeons and Dragons on Telegram.")
-
-start_cmd = CommandHandler('start', start)
-roll_cmd = CommandHandler('roll', roll_handler)
-
-dispatcher.add_handler(start_cmd)
-dispatcher.add_handler(roll_cmd)
+#TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
+#if not TELEGRAM_TOKEN:
+#    logger.error('The TELEGRAM_TOKEN must be set')
+#    raise NotImplementedError
+#
+#updater = Updater(token=TELEGRAM_TOKEN)
+#dispatcher = updater.dispatcher
+#
+#def start(bot, update, **args):
+#    bot.send_message(chat_id=update.message.chat_id, text="Welcome to Dungeons and Dragons on Telegram.")
+#
+#start_cmd = CommandHandler('start', start)
+#roll_cmd = CommandHandler('roll', roll_handler)
+#
+#dispatcher.add_handler(start_cmd)
+#dispatcher.add_handler(roll_cmd)
 
 
 
@@ -74,6 +76,8 @@ def webhook(event, context):
             start(bot, update)
         elif text.startswith('/roll'):
             roll_handler(bot, update)
+        elif text.startswith('/charsheet'):
+            charsheet_handler(bot, update)
 
         return OK_RESPONSE
 
@@ -98,5 +102,5 @@ def set_webhook(event, context):
 
     return ERROR_RESPONSE
 
-if __name__ == "__main__":
-    updater.start_polling()
+#if __name__ == "__main__":
+#    updater.start_polling()
