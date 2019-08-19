@@ -9,9 +9,13 @@ def handler(bot, update, **args):
     username = f"@{update.message.from_user.username}" if update.message.from_user.username else update.message.from_user.first_name
 
     expression = update.message.text.strip().replace('/roll ', '')
-    results = roll(expression)
+    try:
+        results = roll(expression)
+        resp = response(username, results)
+    except Exception as e:
+        resp = f"{username} {str(e)}"
 
-    bot.send_message(chat_id=update.message.chat_id, text=response(username, results), parse_mode="Markdown")
+    bot.send_message(chat_id=update.message.chat_id, text=resp, parse_mode="Markdown")
 
 # Test cases
 # 1d4,1d6
@@ -25,13 +29,12 @@ def roll(expression):
     results = {}
 
     if len(equation) <= 0:
-        raise Exception('Request was not a valid equation!')
+        raise Exception('your request was not a valid equation! Please use the dice notation (for example: 1d6 to roll a die of 6 sides)')
 
     for i in range(0, len(equation)):
         parts = equation[i]
         results[''.join(parts)] = process_notation(parts[0], parts[1], parts[2])
 
-    #print(results)
     return results
 
 def process_notation(notation, sign, modifier_amount):

@@ -7,6 +7,7 @@ from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
 
+from firebase import firebase
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
@@ -16,6 +17,10 @@ if logger.handlers:
         logger.removeHandler(handler)
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
+
+FIREBASE_API_SECRET = os.environ.get('FIREBASE_API_SECRET')
+auth = firebase.FirebaseAuthentication(FIREBASE_API_SECRET, 'wil.alejandro@gmail.com')
+firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=auth)
 
 OK_RESPONSE = {
     'statusCode': 200,
