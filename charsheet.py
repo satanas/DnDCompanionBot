@@ -11,7 +11,7 @@ def handler(bot, update):
 
     link = get_charsheet_link(username)
 
-    bot.send_message(chat_id=update.message.chat_id, text=link, parse_mode="Markdown")
+    bot.send_message(chat_id=update.message.chat_id, text=link, parse_mode="Markdown", disable_web_page_preview=True)
 
 
 def get_charsheet_link(username):
