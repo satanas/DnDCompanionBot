@@ -6,6 +6,7 @@ import telegram
 from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
+from character import import_handler
 
 from firebase import firebase
 from telegram.ext import Updater
@@ -72,6 +73,8 @@ def webhook(event, context):
             charsheet_handler(bot, update)
         elif text.startswith('/help'):
             help_handler(bot, update)
+        elif text.startswith('/importchar'):
+            import_handler(bot, update, firebase_db)
 
         return OK_RESPONSE
 
