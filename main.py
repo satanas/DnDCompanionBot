@@ -8,6 +8,7 @@ from charsheet import handler as charsheet_handler
 from help import handler as help_handler
 from character import import_handler
 from turn import handler as turn_handler
+from dm import handler as dm_handler
 
 from firebase import firebase
 from telegram.ext import Updater
@@ -52,7 +53,7 @@ def configure_telegram():
 
     return telegram.Bot(TELEGRAM_TOKEN)
 
-
+# TODO: Add command to generate commands list for BotFather
 def webhook(event, context):
     """
     Runs the Telegram webhook.
@@ -74,9 +75,11 @@ def webhook(event, context):
         elif text.startswith('/help'):
             help_handler(bot, update)
         elif text.startswith('/importchar'):
-            import_handler(bot, update, firebase_db)
+            import_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
+        elif text.find('dm') > 0:
+            dm_handler(bot, update)
 
         return OK_RESPONSE
 
