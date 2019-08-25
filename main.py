@@ -7,6 +7,7 @@ from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
 from character import import_handler
+from turn import handler as turn_handler
 
 from firebase import firebase
 from telegram.ext import Updater
@@ -62,7 +63,6 @@ def webhook(event, context):
 
     if event.get('httpMethod') == 'POST' and event.get('body'):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
-        chat_id = update.message.chat.id
         text = update.message.text
 
         if text.startswith('/start'):
@@ -75,6 +75,8 @@ def webhook(event, context):
             help_handler(bot, update)
         elif text.startswith('/importchar'):
             import_handler(bot, update, firebase_db)
+        elif text.find('turn') > 0:
+            turn_handler(bot, update)
 
         return OK_RESPONSE
 
