@@ -21,6 +21,7 @@ RACE_URLS = {
     "Tiefling": "http://www.dnd5eapi.co/api/races/9"
 }
 
+# https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
 class Database:
     def __init__(self):
         self.firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=None)

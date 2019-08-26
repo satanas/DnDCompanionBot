@@ -7,10 +7,9 @@ from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
 from character import import_handler
-from turn import handler as turn_handler
+from turns import handler as turn_handler
 from dm import handler as dm_handler
 
-from firebase import firebase
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
@@ -21,13 +20,6 @@ if logger.handlers:
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 
-FIREBASE_API_SECRET = os.environ.get('FIREBASE_API_SECRET')
-auth = firebase.FirebaseAuthentication(FIREBASE_API_SECRET, 'wil.alejandro@gmail.com')
-firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=None)
-
-# https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
-results = firebase_db.get('/', 'campaigns', params={'orderBy': '\"chat_id\"', 'equalTo': 3383241, 'auth': FIREBASE_API_SECRET})
-print(results)
 
 OK_RESPONSE = {
     'statusCode': 200,
