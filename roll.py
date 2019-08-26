@@ -33,7 +33,12 @@ def roll(expression):
 
     for i in range(0, len(equation)):
         parts = equation[i]
-        results[''.join(parts)] = process_notation(parts[0], parts[1], parts[2])
+        key = ''.join(parts)
+        roll_result = process_notation(parts[0], parts[1], parts[2])
+        if key in results:
+            results[key] += roll_result
+        else:
+            results[key] = roll_result
 
     return results
 

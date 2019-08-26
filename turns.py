@@ -24,7 +24,6 @@ def set_turns(chat_id, text, db):
     command = text.replace('/set_turns', '').strip()
     turns = [u.strip() for u in command.split(',')]
     campaign_id, campaign = db.get_campaign(chat_id)
-    print(campaign_id, campaign)
     db.set_turns(campaign_id, turns)
     return print_turns_order(turns)
 
@@ -47,9 +46,3 @@ def print_turns_order(turns):
 
 def print_turn(turns, current_turn):
     return f"Next in line is {turns[current_turn]}"
-
-#if __name__ == "__main__":
-#    db = Database()
-#    #set_turns("3383241", "/set_turns jim, pam, erin", db)
-#    #print(get_current_turn('3383241', db))
-#    print(update_turn('3383241', db))

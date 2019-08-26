@@ -1,10 +1,25 @@
 import os
 import json
+import requests
+
+from models.character import Character
 
 from firebase import firebase
 from firebase.jsonutil import JSONEncoder
 
 FIREBASE_API_SECRET = os.environ.get('FIREBASE_API_SECRET')
+
+RACE_URLS = {
+    "Dwarf": "http://www.dnd5eapi.co/api/races/1",
+    "Elf": "http://www.dnd5eapi.co/api/races/2",
+    "Halfling": "http://www.dnd5eapi.co/api/races/3",
+    "Human": "http://www.dnd5eapi.co/api/races/4",
+    "Dragonborn": "http://www.dnd5eapi.co/api/races/5",
+    "Gnome": "http://www.dnd5eapi.co/api/races/6",
+    "Half-Elf": "http://www.dnd5eapi.co/api/races/7",
+    "Half-Orc": "http://www.dnd5eapi.co/api/races/8",
+    "Tiefling": "http://www.dnd5eapi.co/api/races/9"
+}
 
 class Database:
     def __init__(self):
@@ -28,13 +43,8 @@ class Database:
                                       data={'turns': turns, 'turn_index': '0'},
                                       params={'auth': FIREBASE_API_SECRET})
 
-    def get_character(self, chat_id, username):
-        results = self.firebase_db.get('/', 'characters',
-                                       params={'orderBy': '\"chat_id\", \"username\"',
-                                               'equalTo': [chat_id, username],
-                                               'auth': FIREBASE_API_SECRET})
-        index = list(results.keys())[0]
-        json_data = results[index]
+    def get_character(self, character_id):
+        json_data = self.firebase_db.get('/characters', character_id, params={'auth': FIREBASE_API_SECRET})
 
         if not json_data:
             return None
