@@ -4,11 +4,11 @@ def handler(bot, update):
     db = Database()
     chat_id = update.message.chat.id
     text = update.message.text
-    if text == '/set_dm':
+    if text.startswith('/set_dm'):
         user_id = update.message.from_user.id
         username = update.message.from_user.username
         response = set_dm(chat_id, user_id, username, db)
-    elif text == '/dm':
+    elif text.startswith('/dm'):
         response = get_dm(chat_id, db)
     else:
         response = "Invalid command"
