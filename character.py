@@ -36,7 +36,6 @@ def handler(bot, update):
     else:
         response = "Invalid command"
 
-    print(response)
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def import_character(text, db):
@@ -78,7 +77,7 @@ def attack_roll(username, text, db):
     args = [a.strip() for a in text.replace('/attack_roll ', '').split(' ')]
     if len(args) < 3:
         return ('Invalid syntax. Usage:'
-                '\r\n/attack\\_roll <character> <weapon> <attack(melee|range)> \\[distance] \\[adv|disadv]')
+                '\r\n/attack\\_roll <character> <weapon> <attack>(melee|range) \\[distance] \\[adv|disadv]')
 
     character_name = args[0]
     weapon_name = args[1]
