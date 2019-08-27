@@ -6,7 +6,7 @@ import telegram
 from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
-from character import character_handler
+from character import handler as character_handler
 from turns import handler as turn_handler
 from dm import handler as dm_handler
 from campaign import handler as campaign_handler

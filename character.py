@@ -26,10 +26,11 @@ def handler(bot, update):
     username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
 
     if text.startswith('/import_char'):
-        return import_char(text, db)
+        return import_character(text, db)
     elif text.startswith('/attack_roll'):
         return attack_roll(username, text, db)
-    return import_character(url, chat_id, db)
+    elif text.startswith('/weapons'):
+        return get_weapons(text,db)
 
 def import_character(text, db):
     # 1. Get campaign for chat_id
@@ -41,8 +42,18 @@ def import_character(text, db):
 
     return db.save_character_info(character_id, character_data)
 
-def get_weapons(chat_id, username, db):
-    character = db.get_character(chat_id, username)
+def get_weapons(text, db):
+    character_name = text.replace('/weapons', '').strip()
+
+    character = db.get_character(character_name)
+    if character == None:
+        return f'Character "{character_name}" not found'
+
+    if len(character.weapons) > 0:
+        weapons = [w.name for w in character.weapons]
+        return f'Weapons in {character_name}\'s inventory: {weapons}'
+    else:
+        return f'{character_name} does not have any weapon'
 
 def initiative_roll(chat_id):
     pass
@@ -137,4 +148,6 @@ if __name__ == "__main__":
     url = "https://dl.dropbox.com/s/awlpwcwi0eetdoq/ghamorz.json?dl=0"
     #import_character(url)
     #load_character('123456')
-    print(attack_roll('satanas82', '/attack_roll Ghamorz Javelin ranged 10', db))
+    #print(attack_roll('satanas82', '/attack_roll Ghamorz Javelin ranged 10', db))
+    print(get_weapons('/weapons Ghamorz', db))
+
