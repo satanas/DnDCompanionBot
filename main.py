@@ -28,7 +28,7 @@ OK_RESPONSE = {
     'body': json.dumps('ok')
 }
 ERROR_RESPONSE = {
-    'statusCode': 400,
+    'statusCode': 500,
     'body': json.dumps('Oops, something went wrong!')
 }
 
@@ -57,7 +57,9 @@ def webhook(event, context):
 
     if event.get('httpMethod') == 'POST' and event.get('body'):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
-        print('message', update.message)
+        if update.message == None:
+            return OK_RESPONSE
+
         text = update.message.text
 
         if text == '/start':
