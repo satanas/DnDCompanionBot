@@ -35,10 +35,6 @@ def handler(bot, update):
         return get_weapons(text,db)
 
 def import_character(text, db):
-    # 1. Get campaign for chat_id
-    # 2. Get usernames for campaign
-    # 3. Get character id from username
-    # Goal: Get character_id from chat_id and username
     url = text.replace('/import_char', '').strip()
     character_data = requests.get(url).json()
 
@@ -75,6 +71,7 @@ def ability_check(chat_id, username, ability):
 
 def attack_roll(username, text, db):
     args = [a.strip() for a in text.replace('/attack_roll ', '').split(' ')]
+    print(args)
     if len(args) < 3:
         return "Invalid syntax. Usage:\r\n/attack_roll <character> <weapon> <attack(melee|range)> [distance] [adv|disadv]"
 
@@ -89,6 +86,7 @@ def attack_roll(username, text, db):
     elif len(args) > 4 and args[4] == 'disadv':
         disadv = True
 
+    print(character_name, weapon_name, attack_type, distance, adv, disadv)
     mods = 0
     txt_mod = ''
     adv_mod = ''
@@ -147,6 +145,7 @@ def attack_roll(username, text, db):
     if adv_mod != "":
         dice_notation = f"{dice_notation},{dice_notation}"
 
+    print(txt_formula, dice_notation)
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]]
 
@@ -155,12 +154,12 @@ def attack_roll(username, text, db):
             f"\r\n*{dice_notation}*: {dice_rolls}")
 
 
-if __name__ == "__main__":
-    db = Database()
-    url = "https://dl.dropbox.com/s/awlpwcwi0eetdoq/ghamorz.json?dl=0"
-    #import_character(url)
-    #load_character('123456')
-    #print(attack_roll('satanas82', '/attack_roll Ghamorz Javelin ranged 10', db))
-    #print(get_weapons('/weapons Ghamorz', db))
-    print(initiative_roll('/initiative_roll Ghamorz', db))
+#if __name__ == "__main__":
+#    db = Database()
+#    url = "https://dl.dropbox.com/s/awlpwcwi0eetdoq/ghamorz.json?dl=0"
+#    #import_character(url)
+#    #load_character('123456')
+#    #print(attack_roll('satanas82', '/attack_roll Ghamorz Javelin ranged 10', db))
+#    #print(get_weapons('/weapons Ghamorz', db))
+#    print(initiative_roll('/initiative_roll Ghamorz', db))
 
