@@ -61,11 +61,15 @@ class Database:
                                       data={'turns': turns, 'turn_index': '0'},
                                       params={'auth': FIREBASE_API_SECRET})
 
-    def get_character(self, character_id):
-        json_data = self.firebase_db.get('/characters', character_id, params={'auth': FIREBASE_API_SECRET})
+    def get_character(self, character_name):
+        result = self.firebase_db.get('/', 'characters', params={'orderBy': '\"character/name\"',
+                                                                    'equalTo': f'\"{character_name}\"',
+                                                                    'auth': FIREBASE_API_SECRET})
 
-        if not json_data:
+        if not result:
             return None
+
+        json_data = result[list(result.keys())[0]]
 
         race = json_data['character']['race']['fullName']
         race_data = requests.get(RACE_URLS[race]).json()

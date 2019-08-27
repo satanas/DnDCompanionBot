@@ -28,6 +28,7 @@ class Character:
         self.weapons = [Weapon(x) for x in json_data['character']['inventory'] if x['definition']['filterType'] == "Weapon"]
         self.armor = [Armor(x) for x in json_data['character']['inventory'] if x['definition']['filterType'] == "Armor"]
         self.proficiencies = [x['friendlySubtypeName'] for x in json_data['character']['modifiers']['class'] if x['type'] == 'proficiency']
+        self.size = json_data['character']['race']['size']
         # FIXME: Put the real value here
         self.proficiency = 2
 

@@ -6,7 +6,7 @@ import telegram
 from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
 from help import handler as help_handler
-from character import import_handler
+from character import character_handler
 from turns import handler as turn_handler
 from dm import handler as dm_handler
 from campaign import handler as campaign_handler
@@ -59,7 +59,7 @@ def webhook(event, context):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
         text = update.message.text
 
-        if text.startswith('/start'):
+        if text == '/start':
             start(bot, update)
         elif text.startswith('/roll'):
             roll_handler(bot, update)
@@ -68,7 +68,9 @@ def webhook(event, context):
         elif text.startswith('/help'):
             help_handler(bot, update)
         elif text.startswith('/importchar'):
-            import_handler(bot, update)
+            character_handler(bot, update)
+        elif text.startswith('/attack_roll') > 0:
+            character_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
         elif text.find('dm') > 0:
