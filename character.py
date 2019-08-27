@@ -30,12 +30,13 @@ def handler(bot, update):
     elif text.startswith('/attack_roll'):
         response = attack_roll(username, text, db)
     elif text.startswith('/initiative_roll'):
-        response = initiative_roll(text, db)
+        response = initiative_roll(username, text, db)
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
     else:
         response = "Invalid command"
 
+    print(reponse)
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def import_character(text, db):
@@ -57,7 +58,7 @@ def get_weapons(text, db):
     else:
         return f'{character_name} does not have any weapon'
 
-def initiative_roll(text, db):
+def initiative_roll(username, text, db):
     character_name = text.replace('/initiative_roll', '').strip()
 
     character = db.get_character(character_name)
@@ -67,7 +68,7 @@ def initiative_roll(text, db):
     dice_notation = f'1d20+{character.dex_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'Initiave roll for {character_name} ({dice_notation}): {dice_rolls}'
+    return f'@{username} initiave roll for {character_name} ({dice_notation}): {dice_rolls}'
 
 
 def ability_check(chat_id, username, ability):
@@ -75,9 +76,9 @@ def ability_check(chat_id, username, ability):
 
 def attack_roll(username, text, db):
     args = [a.strip() for a in text.replace('/attack_roll ', '').split(' ')]
-    print(args)
     if len(args) < 3:
-        return "Invalid syntax. Usage:\r\n/attack_roll <character> <weapon> <attack(melee|range)> [distance] [adv|disadv]"
+        return ('Invalid syntax. Usage:'
+                '\r\n/attack_roll <character> <weapon> <attack(melee|range)> \[distance\] \[adv|disadv\]')
 
     character_name = args[0]
     weapon_name = args[1]
@@ -90,7 +91,6 @@ def attack_roll(username, text, db):
     elif len(args) > 4 and args[4] == 'disadv':
         disadv = True
 
-    print(character_name, weapon_name, attack_type, distance, adv, disadv)
     mods = 0
     txt_mod = ''
     adv_mod = ''
@@ -149,7 +149,6 @@ def attack_roll(username, text, db):
     if adv_mod != "":
         dice_notation = f"{dice_notation},{dice_notation}"
 
-    print(txt_formula, dice_notation)
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]]
 
