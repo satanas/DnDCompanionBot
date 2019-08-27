@@ -36,7 +36,7 @@ def handler(bot, update):
     else:
         response = "Invalid command"
 
-    print(reponse)
+    print(response)
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def import_character(text, db):

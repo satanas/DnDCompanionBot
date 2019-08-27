@@ -75,7 +75,7 @@ def webhook(event, context):
             character_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
-        elif text.find('dm') > 0:
+        elif text.startswith('/set_dm') or text.startswith('/dm'):
             dm_handler(bot, update)
         elif text.find('campaign') > 0:
             campaign_handler(bot, update)
