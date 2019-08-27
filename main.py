@@ -57,6 +57,7 @@ def webhook(event, context):
 
     if event.get('httpMethod') == 'POST' and event.get('body'):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
+        print('message', update.message)
         text = update.message.text
 
         if text == '/start':
