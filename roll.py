@@ -36,14 +36,14 @@ def roll(expression):
         key = ''.join(parts)
         roll_result = process_notation(parts[0], parts[1], parts[2])
         if key in results:
-            results[key] += roll_result
+            results[key].append(roll_result)
         else:
-            results[key] = roll_result
+            results[key] = [roll_result]
 
     return results
 
 def process_notation(notation, sign, modifier_amount):
-    results = []
+    result = 0
 
     modifier = 0
     if sign != '' and modifier != '':
@@ -51,19 +51,20 @@ def process_notation(notation, sign, modifier_amount):
 
     dice_num = int(notation.split('d')[0])
     sides = notation.split('d')[1]
-    for n in range(0, dice_num):
-        if sides == '100' or sides == '%':
-            results.append(roll_percentile())
-        else:
-            results.append(roll_one(sides, modifier))
+    if sides == '100' and dice_num > 1:
+        raise Exception('percentile roll doesn\'t support multiple dice')
 
-    return results
+    if sides == '100' or sides == '%':
+        result = roll_one(100)
+    else:
+        for n in range(0, dice_num):
+            result += roll_one(int(sides))
+        result = max(1, result + modifier)
 
-def roll_one(sides, mod=0):
-    return random.randint(1, int(sides)) + mod
+    return result
 
-def roll_percentile():
-    return random.randint(1, 100)
+def roll_one(sides):
+    return random.randint(1,sides)
 
 def response(username, results):
     rolls = ''
