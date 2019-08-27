@@ -5,13 +5,17 @@ def handler(bot, update):
     chat_id = update.message.chat.id
     text = update.message.text
     if text.startswith('/set_turns'):
-        return set_turns(chat_id, text, db)
+        response = set_turns(chat_id, text, db)
     elif text.startswith('/turn'):
-        return get_current_turn(chat_id, db)
+        response = get_current_turn(chat_id, db)
     elif text.startswith('/next_turn'):
-        return update_turn(chat_id, db, True)
+        response = update_turn(chat_id, db, True)
     elif text.startswith('/prev_turn'):
-        return update_turn(chat_id, db, False)
+        response = update_turn(chat_id, db, False)
+    else:
+        response = "Invalid command"
+
+    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def get_turns_info(chat_id, db):
     campaign_id, campaign = db.get_campaign(chat_id)

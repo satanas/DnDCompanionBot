@@ -7,9 +7,13 @@ def handler(bot, update):
     if text == '/set_dm':
         user_id = update.message.from_user.id
         username = update.message.from_user.username
-        return set_dm(chat_id, user_id, username, db)
+        response = set_dm(chat_id, user_id, username, db)
     elif text == '/dm':
-        return get_dm(chat_id, db)
+        response = get_dm(chat_id, db)
+    else:
+        response = "Invalid command"
+
+    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def set_dm(chat_id, user_id, username, db):
     campaign_id, campaign = db.get_campaign(chat_id)

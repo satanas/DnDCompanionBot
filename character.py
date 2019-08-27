@@ -26,13 +26,17 @@ def handler(bot, update):
     username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
 
     if text.startswith('/import_char'):
-        return import_character(text, db)
+        response = import_character(text, db)
     elif text.startswith('/attack_roll'):
-        return attack_roll(username, text, db)
+        response = attack_roll(username, text, db)
     elif text.startswith('/initiative_roll'):
-        return initiative_roll(text, db)
+        response = initiative_roll(text, db)
     elif text.startswith('/weapons'):
-        return get_weapons(text,db)
+        response = get_weapons(text,db)
+    else:
+        response = "Invalid command"
+
+    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def import_character(text, db):
     url = text.replace('/import_char', '').strip()

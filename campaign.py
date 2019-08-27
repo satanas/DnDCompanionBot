@@ -4,10 +4,13 @@ def handler(bot, update):
     db = Database()
     chat_id = update.message.chat.id
     text = update.message.text
+    response = "Invalid command"
     if text.startswith('/start_campaign'):
-        return start_campaign(chat_id, text, db)
+        response = start_campaign(chat_id, text, db)
     elif text.startswith('/close_campaign'):
-        return close_campaign(chat_id, db)
+        response = close_campaign(chat_id, db)
+
+    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def start_campaign(chat_id, text, db):
     name = text.replace('/start_campaign', '').strip()
