@@ -70,11 +70,8 @@ def webhook(event, context):
             charsheet_handler(bot, update)
         elif text.startswith('/help'):
             help_handler(bot, update)
-        elif text.startswith('/importchar'):
-            character_handler(bot, update)
-        elif text.startswith('/attack_roll') > 0:
-            character_handler(bot, update)
-        elif text.startswith('/initiative_roll') > 0:
+        elif text.startswith('/importchar') or text.startswith('/attack_roll') or \
+                text.startswith('/initiative_roll') or text.startswith('/weapons'):
             character_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
