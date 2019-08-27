@@ -71,6 +71,8 @@ def webhook(event, context):
             character_handler(bot, update)
         elif text.startswith('/attack_roll') > 0:
             character_handler(bot, update)
+        elif text.startswith('/initiative_roll') > 0:
+            character_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
         elif text.find('dm') > 0:
