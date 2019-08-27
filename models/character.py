@@ -8,6 +8,7 @@ class Character:
         self.id = json_data['character']['id']
         self.beyond_url = json_data['character']['readonlyUrl']
         self.name = json_data['character']['name']
+        self.level = int(json_data['character']['classes'][0]['level'])
         self.race = json_data['character']['race']['fullName']
         self.str = int(json_data['character']['stats'][0]['value']) + int(race_data['ability_bonuses'][0])
         self.dex = int(json_data['character']['stats'][1]['value']) + int(race_data['ability_bonuses'][1])
@@ -29,8 +30,7 @@ class Character:
         self.armor = [Armor(x) for x in json_data['character']['inventory'] if x['definition']['filterType'] == "Armor"]
         self.proficiencies = [x['friendlySubtypeName'] for x in json_data['character']['modifiers']['class'] if x['type'] == 'proficiency']
         self.size = json_data['character']['race']['size']
-        # FIXME: Put the real value here
-        self.proficiency = 2
+        self.proficiency = math.floor((self.level + 7) / 4)
 
 
     def has_weapon_proficiency(self, weapon):
