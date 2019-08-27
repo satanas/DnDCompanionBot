@@ -9,6 +9,7 @@ from help import handler as help_handler
 from character import import_handler
 from turns import handler as turn_handler
 from dm import handler as dm_handler
+from campaign import handler as campaign_handler
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -72,6 +73,8 @@ def webhook(event, context):
             turn_handler(bot, update)
         elif text.find('dm') > 0:
             dm_handler(bot, update)
+        elif text.find('campaign') > 0:
+            campaign_handler(bot, update)
 
         return OK_RESPONSE
 

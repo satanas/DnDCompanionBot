@@ -2,6 +2,7 @@ import os
 import json
 import requests
 
+from models.campaign import Campaign
 from models.character import Character
 
 from firebase import firebase
@@ -26,13 +27,29 @@ class Database:
     def __init__(self):
         self.firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=None)
 
+    def create_campaign(self, chat_id, name):
+        campaign = Campaign(chat_id, name)
+
+        self.firebase_db.post('/campaigns',
+                              data=campaign.to_json(),
+                              params={'auth': FIREBASE_API_SECRET})
+
     # TODO: Only active campaigns
     def get_campaign(self, chat_id):
         results = self.firebase_db.get('/', 'campaigns', params={'orderBy': '\"chat_id\"',
                                                                  'equalTo': chat_id,
                                                                  'auth': FIREBASE_API_SECRET})
-        index = list(results.keys())[0]
-        return index, results[index]
+
+        active_campaigns = [(c, results[c]) for c in list(results.keys()) if results[c]['active'] == True]
+        if len(active_campaigns) == 0:
+            return None, None
+        campaign_id, campaign = active_campaigns[0]
+        return campaign_id, campaign
+
+    def close_campaign(self, campaign_id):
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}',
+                                      data={'active': False},
+                                      params={'auth': FIREBASE_API_SECRET})
 
     def set_turn_index(self, campaign_id, turn_index):
         return self.firebase_db.patch(f'/campaigns/{campaign_id}',
@@ -62,3 +79,11 @@ class Database:
                                       data={'dm_user_id': user_id, 'dm_username': username},
                                       params={'auth': FIREBASE_API_SECRET})
 
+
+class CampaignActiveException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+class CampaignNotFoundException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
