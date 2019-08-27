@@ -29,6 +29,8 @@ def handler(bot, update):
         return import_character(text, db)
     elif text.startswith('/attack_roll'):
         return attack_roll(username, text, db)
+    elif text.startswith('/initiative_roll'):
+        return initiative_roll(text, db)
     elif text.startswith('/weapons'):
         return get_weapons(text,db)
 
@@ -55,8 +57,18 @@ def get_weapons(text, db):
     else:
         return f'{character_name} does not have any weapon'
 
-def initiative_roll(chat_id):
-    pass
+def initiative_roll(text, db):
+    character_name = text.replace('/initiative_roll', '').strip()
+
+    character = db.get_character(character_name)
+    if character == None:
+        return f'Character "{character_name}" not found'
+
+    dice_notation = f'1d20+{character.dex_mod}'
+    results = roll(dice_notation)
+    dice_rolls = results[list(results.keys())[0]][0]
+    return f'Initiave roll for {character_name} ({dice_notation}): {dice_rolls}'
+
 
 def ability_check(chat_id, username, ability):
     pass
@@ -149,5 +161,6 @@ if __name__ == "__main__":
     #import_character(url)
     #load_character('123456')
     #print(attack_roll('satanas82', '/attack_roll Ghamorz Javelin ranged 10', db))
-    print(get_weapons('/weapons Ghamorz', db))
+    #print(get_weapons('/weapons Ghamorz', db))
+    print(initiative_roll('/initiative_roll Ghamorz', db))
 
