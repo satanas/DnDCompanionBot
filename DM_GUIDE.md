@@ -48,7 +48,8 @@ unless the players prepare themselves to avoid that. The DM sets up the encounte
 then asks the players to prepare themselves.
 
 The flow is as follows:
-1.First, define the objective of the exploration. For example: cross the Black Forest.
+
+1. First, define the objective of the exploration. For example: cross the Black Forest.
 1. Then build a chart (aka exploration chart) with the possible encounters during the crossing and the odds of facing
 them according to a roll of 1d20 but considering only rolls from 2-16 since 1 and 17-20 are reserved for something else
 (more details below).
