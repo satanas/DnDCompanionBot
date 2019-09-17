@@ -125,6 +125,6 @@ D&D 5E Database/API
 
 ## References:
 
-[[1] Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)
-[[2] D&D and Exploration](https://madlair.com/en/2019/01/24/dd-and-exploration/)
-[[3] Designing Social Encounters](https://dungeonsmaster.com/2011/04/designing-social-encounters/)
+* [[1] Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)
+* [[2] D&D and Exploration](https://madlair.com/en/2019/01/24/dd-and-exploration/)
+* [[3] Designing Social Encounters](https://dungeonsmaster.com/2011/04/designing-social-encounters/)
