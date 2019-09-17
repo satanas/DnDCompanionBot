@@ -48,24 +48,25 @@ unless the players prepare themselves to avoid that. The DM sets up the encounte
 then asks the players to prepare themselves.
 
 The flow is as follows:
-1. First, define the objective of the exploration. For example: cross the Black Forest.
-2. Then build a chart (aka exploration chart https://madlair.com/wp-content/uploads/2019/01/exploration-chart-eng.jpg)
-with the possible encounters during the crossing and the odds of facing them according to a roll of 1d20 but considering
-only rolls from 2-16 since 1 and 17-20 are reserved for something else (more details below).
-3. Now think about possible actions to avoid these encounters (ideally at least 1 action per player). Assume that
+1.First, define the objective of the exploration. For example: cross the Black Forest.
+1. Then build a chart (aka exploration chart) with the possible encounters during the crossing and the odds of facing
+them according to a roll of 1d20 but considering only rolls from 2-16 since 1 and 17-20 are reserved for something else
+(more details below).
+    ![](https://madlair.com/wp-content/uploads/2019/01/exploration-chart-eng.jpg)
+1. Now think about possible actions to avoid these encounters (ideally at least 1 action per player). Assume that
 something will happen unless the players prepare themselves to avoid these encounters.
-4. Ask the players to prepare themselves. One player at a time, in any order the players agree on, they will propose one
+1. Ask the players to prepare themselves. One player at a time, in any order the players agree on, they will propose one
 and only one action to help the group avoid the mentioned scenarios above. Assign a DC (Difficulty Class) to each
 possible solution.
-3. After the preparations, each player rolls a skill check related to their action, with advantage if the action is a
+1. After the preparations, each player rolls a skill check related to their action, with advantage if the action is a
 narrative follow-up of the previous player’s action. If the player uses a resource that they can recover with a rest (a
 rage, a channel divinity, a spell slot, etc) an automatic success is gained and no roll is required.
-4. Then roll 1d20 and follow the exploration chart. In other words:
-  * With a result of 1 – something bad happens and brings some damage (hp damage, exhaustion, HD loss). Then roll again
-  * With a result between 2 and 16 – one of the encounters happen if no one was successful in avoiding it.
-  * With a result between 17 and 19 – roll for a random encounter (which can still be avoided by clever thinking)
-  * With a result of 20 – everything goes better than as expected and no one gets hurt
-5. The challenge is completed after the players have faced whatever was indicated by the previous roll.
+1. Then roll 1d20 and follow the exploration chart. In other words:
+    * With a result of 1 – something bad happens and brings some damage (hp damage, exhaustion, HD loss). Then roll again
+    * With a result between 2 and 16 – one of the encounters happen if no one was successful in avoiding it.
+    * With a result between 17 and 19 – roll for a random encounter (which can still be avoided by clever thinking)
+    * With a result of 20 – everything goes better than as expected and no one gets hurt
+1. The challenge is completed after the players have faced whatever was indicated by the previous roll.
 
 ## Social challenges
 
