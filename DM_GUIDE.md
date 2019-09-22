@@ -69,12 +69,12 @@ rage, a channel divinity, a spell slot, etc) an automatic success is gained and 
     * With a result of 20 – everything goes better than as expected and no one gets hurt
 1. The challenge is completed after the players have faced whatever was indicated by the previous roll.
 
-## Social challenges
+# Social challenges
 
 As Derek Myers mentions in their post [3] about social encounters, there are two main ways to design these encounters: a
 fast way (as fillers between fights) or a detailed one (with more opportunities to role-play and develop PC).
 
-### Fast Way
+## Fast Way
 
 For social encounters that are going to be quick, there’s no need to go into much more detail.it's usually enough just
 providing each NPC with a name, and determining their sex and race. Anything else is kind of a wasted effort. After all,
@@ -84,7 +84,7 @@ Encounters created the fast way are usually short skill challenges and only requ
 or 2, so 4 or 6 successes respectively). Since it doesn’t take most parties very long to accumulate the required
 successes these encounters don’t need the same level of detail as more complex social interactions.
 
-### Detailed Way
+## Detailed Way
 
 When the encounter is more detailed, you might need to paint all NPCs with the “equally important” brush, otherwise, the
 PCs would know if the NPC they were talking to is important or not just by how they are described. You need to come up
@@ -99,54 +99,54 @@ For the more important NPCs (those that had more significant interactions with t
 details, especially if they might be engaged in a combat situation. In this case, you can determine their hit points,
 defenses and basic attacks.
 
-### Other Tips
+## Other Tips
 
 In order to keep the NPCs straight, you can create cheat sheets. Build one power card for every NPC (similar to the
 character sheets) providing their basic information. Also include things this NPC would talk about, like what juicy
 tidbits they might reveal as well as some red herrings.
 
-## Checks
+# Checks
 
-### Type of Checks
+## Type of Checks
 
-* Saving Throws: Are generally used when your character cannot prepare for something.
-* Ability Check: Test a character’s or monster’s innate talent and training in an effort to overcome a challenge they initiate.
-* Contests: Are ability checks used when one character's or monster's efforts are directly opposed to another's.
-* Passive Checks: Used to save time by making anything a check of 10 + Skill Bonus (+5 advantage and -5 disadvantage).
-* Helping: You can help someone perform a skill, if you have proficiency in it. It is just an advantage roll.
-* Group Checks: Everyone gets to roll an ability check and if at least half succeed, the group succeeds.
+* *Saving Throws*: Are generally used when your character cannot prepare for something.
+* *Ability Check*: Test a character’s or monster’s innate talent and training in an effort to overcome a challenge they initiate.
+* *Contests*: Are ability checks used when one character's or monster's efforts are directly opposed to another's.
+* *Passive Checks*: Used to save time by making anything a check of 10 + Skill Bonus (+5 advantage and -5 disadvantage).
+* *Helping*: You can help someone perform a skill, if you have proficiency in it. It is just an advantage roll.
+* *Group Checks*: Everyone gets to roll an ability check and if at least half succeed, the group succeeds.
 
-### Skills
+## Skills
 
 Each ability covers a broad range of capabilities, including skills that a character or a monster can be proficient in.
 A skill represents a specific aspect of an ability score, and an individual's proficiency in a skill demonstrates a
 focus on that aspect.
 
-* Strength
+* *Strength*
     * Athletics
-* Dexterity
+* *Dexterity*
     * Acrobatics
     * Sleight of Hand
     * Stealth
-* Intelligence
+* *Intelligence*
     * Arcana
     * History
     * Investigation
     * Nature
     * Religion
-* Wisdom
+* *Wisdom*
     * Animal Handling
     * Insight
     * Medicine
     * Perception
     * Survival
-* Charisma
+* *Charisma*
     * Deception
     * Intimidation
     * Performance
     * Persuasion
 
-### Difficulty Class
+## Difficulty Class
 
 Task Difficulty | DC
 ------------ | -------------
@@ -159,7 +159,7 @@ Formidable | 25
 Heroic | 30
 Nearly impossible | 40
 
-## Resources
+# Resources
 
 Encounter calculators:
 * http://dhmstark.co.uk/rpgs/encounter-calculator-5th/
@@ -176,7 +176,7 @@ Random dungeon generator:
 D&D 5E Database/API
 * https://github.com/adrpadua/5e-database
 
-## References:
+# References:
 
 * [1] [Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)
 * [2] [D&D and Exploration](https://madlair.com/en/2019/01/24/dd-and-exploration/)
