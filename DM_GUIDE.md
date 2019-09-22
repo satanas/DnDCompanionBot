@@ -99,12 +99,65 @@ For the more important NPCs (those that had more significant interactions with t
 details, especially if they might be engaged in a combat situation. In this case, you can determine their hit points,
 defenses and basic attacks.
 
-### Other tips
+### Other Tips
 
 In order to keep the NPCs straight, you can create cheat sheets. Build one power card for every NPC (similar to the
 character sheets) providing their basic information. Also include things this NPC would talk about, like what juicy
 tidbits they might reveal as well as some red herrings.
 
+## Checks
+
+### Type of Checks
+
+* Saving Throws: Are generally used when your character cannot prepare for something.
+* Ability Check: Test a character’s or monster’s innate talent and training in an effort to overcome a challenge they initiate.
+* Contests: Are ability checks used when one character's or monster's efforts are directly opposed to another's.
+* Passive Checks: Used to save time by making anything a check of 10 + Skill Bonus (+5 advantage and -5 disadvantage).
+* Helping: You can help someone perform a skill, if you have proficiency in it. It is just an advantage roll.
+* Group Checks: Everyone gets to roll an ability check and if at least half succeed, the group succeeds.
+
+### Skills
+
+Each ability covers a broad range of capabilities, including skills that a character or a monster can be proficient in.
+A skill represents a specific aspect of an ability score, and an individual's proficiency in a skill demonstrates a
+focus on that aspect.
+
+* Strength
+    * Athletics
+* Dexterity
+    * Acrobatics
+    * Sleight of Hand
+    * Stealth
+* Intelligence
+    * Arcana
+    * History
+    * Investigation
+    * Nature
+    * Religion
+* Wisdom
+    * Animal Handling
+    * Insight
+    * Medicine
+    * Perception
+    * Survival
+* Charisma
+    * Deception
+    * Intimidation
+    * Performance
+    * Persuasion
+
+### Difficulty Class
+
+Task Difficulty | DC
+------------ | -------------
+Very easy | 0
+Easy | 5
+Average | 10
+Tough | 15
+Challenging | 20
+Formidable | 25
+Heroic | 30
+Nearly impossible | 40
 
 ## Resources
 
@@ -125,6 +178,9 @@ D&D 5E Database/API
 
 ## References:
 
-* [[1] Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)
-* [[2] D&D and Exploration](https://madlair.com/en/2019/01/24/dd-and-exploration/)
-* [[3] Designing Social Encounters](https://dungeonsmaster.com/2011/04/designing-social-encounters/)
+* [1] [Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)
+* [2] [D&D and Exploration](https://madlair.com/en/2019/01/24/dd-and-exploration/)
+* [3] [Designing Social Encounters](https://dungeonsmaster.com/2011/04/designing-social-encounters/)
+* [4] [Ability Checks](https://5thsrd.org/rules/abilities/ability_checks/)
+* [5] [Ability Checks vs Skill Checks](https://www.dndbeyond.com/forums/dungeons-dragons-discussion/rules-game-mechanics/11501-ability-checks-vs-skill-checks)
+* [6] [Using Skills](https://www.dandwiki.com/wiki/SRD:Using_Skills)
