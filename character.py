@@ -159,9 +159,10 @@ def attack_roll(username, text, db):
 
 
 def talk(text):
-    sep = text.find(" ")
-    character_name = text[:sep]
-    message = text[sep + 1:]
+    command = text.replace('/talk', '').strip()
+    sep = command.find(" ")
+    character_name = command[:sep]
+    message = command[sep + 1:]
 
     return f"```{character_name} says:\r\n{message}```"
 

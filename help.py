@@ -1,25 +1,99 @@
+import sys
+
+# To update commands in README.md:
+# python3 help.py --tables
+#
+# To update commands in @botfather:
+# python3 help.py --botfather
+
+
+GENERAL_COMMANDS = [
+    ("/start", None, "starts the DnDCompanionBot"),
+    ("/roll", "<expression>", "rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)"),
+    ("/charsheet", "<username>", "returns the character sheet associated with username"),
+    ("/combatsheet", None, "returns the link of the combat cheatsheet"),
+    ("/help", None, "shows this help message"),
+]
+
+CAMPAIGN_COMMANDS = [
+    ("/start_campaign", None, "starts a new campaign in the invoked group"),
+    ("/close_campaign", None, "closes an active campaign"),
+    ("/set_turns", "<username1>,...<usernameN>", "creates a list with the order of players for a given round"),
+    ("/turn", None, "shows the current player in the turns list"),
+    ("/next_turn", None, "moves to the next player in the turns list"),
+    ("/set_dm", "<username>", "sets the username of the DM for the current campaign"),
+    ("/import_char", "<url>", "imports the JSON data of a character from a URL"),
+    ("/dm", None, "shows the DM for the current campaign"),
+]
+
+CHARACTER_COMMANDS = [
+    ("/weapons", "<character>", "shows the list of weapons of a character"),
+    ("/attack_roll", "<character>", "performs an attack roll on a character"),
+    ("/initiative_roll", "<character>", "performs an initiative roll for a character"),
+    ("/talk", "<character> <message>", "prints a message using in-game conversation format"),
+]
+HELP_SUMMARY = (
+    "Hi! I am the Dungeons & Dragons Companion Bot and I can help you manage a few things in your D&D "
+    "campaigns. This is the list of commands you can use:"
+)
+GENERAL_COMMANDS_TABLE_HEADER = (
+    "General commands | Action\n"
+    "--------|-------"
+)
+CAMPAIGN_COMMANDS_TABLE_HEADER = (
+    "Campaign commands | Action\n"
+    "--------|-------"
+)
+CHARACTER_COMMANDS_TABLE_HEADER = (
+    "Character commands | Action\n"
+    "--------|-------"
+)
+
 def handler(bot, update):
-    help_text = (
-        "Hi! I am the Dungeons & Dragons Companion Bot and I can help you manage a few things in your D&D "
-        "campaigns. This is the list of commands you can use:\n\n"
-        "*General commands:*\n"
-        "/start - starts the DnDCompanionBot\n"
-        "/roll <expression> - rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)\n"
-        "/charsheeet <username> - returns the character sheet associated with username\n"
-        "/help - shows this help message\n\n"
-        "*Campaign commands:*\n"
-        "/start\\_campaign - starts a new campaign in the invoked group\n"
-        "/close\\_campaign - closes an active campaign\n"
-        "/import\\_char <json_url> - imports the JSON data of a character\n"
-        "/set\\_turns <p1>,<p2>... - creates a list with the order of players in a combat\n"
-        "/turn - shows the current player in the combat order list\n"
-        "/next\\_turn - moves the turn to the next player in the combat order list\n"
-        "/set\\_dm <username> - sets the DM of the current campaign\n"
-        "/dm - shows the DM for the current campaign\n\n"
-        "*Character commands:*\n"
-        "/weapons <character> - shows the list of weapons of a character\n"
-        "/attack\\_roll <character> <weapon> <attack>(melee|range) \\[distance] \\[adv|disadv] - performs an attack roll\n"
-        "/initiative\\_roll <character> - performs an initiative roll for the character\n"
-        "/talk <character> <message> - prints message using an in-game conversation format\n"
-        )
-    bot.send_message(chat_id=update.message.chat_id, text=''.join(help_text), parse_mode="Markdown", disable_web_page_preview=True)
+    bot.send_message(chat_id=update.message.chat_id, text=help_in_markdown(), parse_mode="Markdown", disable_web_page_preview=True)
+
+# Markdown with tables. Used to regenerate the list of commands in README.md
+def help_in_markdown_tables():
+    return "{}\n{}\n\n{}\n{}\n\n{}\n{}".format(
+                GENERAL_COMMANDS_TABLE_HEADER,
+                '\n'.join([concat_command(c, True, '|') for c in GENERAL_COMMANDS]),
+                CAMPAIGN_COMMANDS_TABLE_HEADER,
+                '\n'.join([concat_command(c, True, '|') for c in CAMPAIGN_COMMANDS]),
+                CHARACTER_COMMANDS_TABLE_HEADER,
+                '\n'.join([concat_command(c, True, '|') for c in CHARACTER_COMMANDS])
+            )
+
+# Markdown with no tables. Used for the response of /help
+def help_in_markdown(include_summary=False):
+    summary = HELP_SUMMARY if include_summary else ''
+    return "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
+                HELP_SUMMARY,
+                '\n'.join([concat_command(c, True) for c in GENERAL_COMMANDS]),
+                '\n'.join([concat_command(c, True) for c in CAMPAIGN_COMMANDS]),
+                '\n'.join([concat_command(c, True) for c in CHARACTER_COMMANDS])
+            )
+
+# Just a list of plain text, no markup, no arguments.
+# Used to update the list of commands in @botfather
+def help_for_botfather():
+    def escape(cmd):
+        return cmd[1:]
+
+    command_list = GENERAL_COMMANDS + CAMPAIGN_COMMANDS + CHARACTER_COMMANDS
+    return '\n'.join([escape(concat_command(c)) for c in command_list]).strip()
+
+def concat_command(command, add_params=False, separator='-'):
+    cmd = command[0]
+    params = f"{command[1]} " if add_params is True and command[1] is not None else ''
+    desc = command[2]
+    return f"{cmd} {params}{separator} {desc}"
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        fmt = sys.argv[1]
+        if fmt == "--botfather" or fmt == "-b":
+            print(help_for_botfather())
+        elif fmt == "--markdown" or fmt == "-m":
+            print(help_in_markdown())
+        elif fmt == "--tables" or fmt == "-t":
+            print(help_in_markdown_tables())
