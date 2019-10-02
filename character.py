@@ -33,6 +33,8 @@ def handler(bot, update):
         response = initiative_roll(username, text, db)
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
+    elif text.startswith('/talk'):
+        response = talk(text)
     else:
         response = "Invalid command"
 
@@ -155,6 +157,13 @@ def attack_roll(username, text, db):
             f"\r\nFormula: {txt_formula}"
             f"\r\n*{dice_notation}*: {dice_rolls}")
 
+
+def talk(text):
+    sep = text.find(" ")
+    character_name = text[:sep]
+    message = text[sep + 1:]
+
+    return f"```{character_name} says:\r\n{message}```"
 
 #if __name__ == "__main__":
 #    db = Database()

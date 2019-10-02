@@ -20,5 +20,6 @@ def handler(bot, update):
         "/weapons <character> - shows the list of weapons of a character\n"
         "/attack\\_roll <character> <weapon> <attack>(melee|range) \\[distance] \\[adv|disadv] - performs an attack roll\n"
         "/initiative\\_roll <character> - performs an initiative roll for the character\n"
+        "/talk <character> <message> - prints message using an in-game conversation format\n"
         )
     bot.send_message(chat_id=update.message.chat_id, text=''.join(help_text), parse_mode="Markdown", disable_web_page_preview=True)
