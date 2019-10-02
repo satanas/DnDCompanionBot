@@ -50,7 +50,7 @@ CHARACTER_COMMANDS_TABLE_HEADER = (
 )
 
 def handler(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=help_in_markdown(), parse_mode="Markdown", disable_web_page_preview=True)
+    bot.send_message(chat_id=update.message.chat_id, text=help_in_markdown(True, True), parse_mode="Markdown", disable_web_page_preview=True)
 
 # Markdown with tables. Used to regenerate the list of commands in README.md
 def help_in_markdown_tables():
@@ -64,13 +64,13 @@ def help_in_markdown_tables():
             )
 
 # Markdown with no tables. Used for the response of /help
-def help_in_markdown(include_summary=False):
+def help_in_markdown(include_summary=False, escape=False):
     summary = HELP_SUMMARY if include_summary else ''
     return "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
-                HELP_SUMMARY,
-                '\n'.join([concat_command(c, True) for c in GENERAL_COMMANDS]),
-                '\n'.join([concat_command(c, True) for c in CAMPAIGN_COMMANDS]),
-                '\n'.join([concat_command(c, True) for c in CHARACTER_COMMANDS])
+                summary,
+                '\n'.join([concat_command(c, True, '-', escape) for c in GENERAL_COMMANDS]),
+                '\n'.join([concat_command(c, True, '-', escape) for c in CAMPAIGN_COMMANDS]),
+                '\n'.join([concat_command(c, True, '-', escape) for c in CHARACTER_COMMANDS])
             )
 
 # Just a list of plain text, no markup, no arguments.
@@ -82,11 +82,15 @@ def help_for_botfather():
     command_list = GENERAL_COMMANDS + CAMPAIGN_COMMANDS + CHARACTER_COMMANDS
     return '\n'.join([escape(concat_command(c)) for c in command_list]).strip()
 
-def concat_command(command, add_params=False, separator='-'):
+def concat_command(command, add_params=False, separator='-', escape=False):
     cmd = command[0]
     params = f"{command[1]} " if add_params is True and command[1] is not None else ''
     desc = command[2]
-    return f"{cmd} {params}{separator} {desc}"
+    formatted_cmd = f"{cmd} {params}{separator} {desc}"
+    return formatted_cmd if escape is False else escape_md(formatted_cmd)
+
+def escape_md(text):
+    return text.replace('_', '\_')
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
