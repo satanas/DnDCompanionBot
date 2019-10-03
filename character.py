@@ -163,6 +163,7 @@ def talk(text):
     sep = command.find(" ")
     character_name = command[:sep]
     message = command[sep + 1:]
+    print(text, command, sep, character_name, message)
 
     return f"```{character_name} says:\r\n{message}```"
 

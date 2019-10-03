@@ -28,7 +28,7 @@ CAMPAIGN_COMMANDS = [
 
 CHARACTER_COMMANDS = [
     ("/weapons", "<character>", "shows the list of weapons of a character"),
-    ("/attack_roll", "<character>", "performs an attack roll on a character"),
+    ("/attack_roll", "<character> <weapon> melee|range <distance> adv|disadv", "performs an attack roll on a character"),
     ("/initiative_roll", "<character>", "performs an initiative roll for a character"),
     ("/talk", "<character> <message>", "prints a message using in-game conversation format"),
 ]
