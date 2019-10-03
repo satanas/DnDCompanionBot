@@ -35,6 +35,7 @@ def handler(bot, update):
         response = get_weapons(text,db)
     elif text.startswith('/talk'):
         response = talk(text)
+        print('talk response', response)
     else:
         response = "Invalid command"
 
@@ -163,8 +164,9 @@ def talk(text):
     sep = command.find(" ")
     character_name = command[:sep]
     message = command[sep + 1:]
+    response = f"```\r\n{character_name} says:\r\n–{message}\r\n```"
 
-    return f"```{character_name} says:\r\n–{message}```"
+    return response
 
 #if __name__ == "__main__":
 #    db = Database()
