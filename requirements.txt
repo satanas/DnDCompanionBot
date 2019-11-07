@@ -1,3 +1,4 @@
 python-telegram-bot==8.1.1
 requests==2.20.0
 python-firebase==1.2
+nose2==0.9.1

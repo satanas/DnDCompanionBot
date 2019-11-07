@@ -35,7 +35,6 @@ def handler(bot, update):
         response = get_weapons(text,db)
     elif text.startswith('/talk'):
         response = talk(text)
-        print('talk response', response)
     else:
         response = "Invalid command"
 

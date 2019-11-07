@@ -55,6 +55,22 @@ $ serverless deploy
 $ curl -X POST https://<your_url>.amazonaws.com/dev/set_webhook
 ```
 
+## Testing locally
+
+Make sure you use pip and all tools for Python 3, then install all dependencies:
+
+```
+$ pip3 install virtualenv
+$ virtualenv venv
+$ source venv/bin/activate
+
+$ pip3 install -r requirements.txt
+```
+
+And finally, run the tests:
+```
+$ nose2 -v
+```
 
 ## Notes
 AWS credentials saved on your machine at ~/.aws/credentials.
