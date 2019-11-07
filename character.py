@@ -1,5 +1,6 @@
 import sys
 import requests
+from urllib.parse import urlparse
 
 from roll import roll
 from database import Database
@@ -26,7 +27,7 @@ def handler(bot, update):
     username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
 
     if text.startswith('/import_char'):
-        response = import_character(text, db)
+        response = import_character(text, db, requests.get)
     elif text.startswith('/attack_roll'):
         response = attack_roll(username, text, db)
     elif text.startswith('/initiative_roll'):
@@ -40,9 +41,18 @@ def handler(bot, update):
 
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
-def import_character(text, db):
+def import_character(text, db, get):
     url = text.replace('/import_char', '').strip()
-    character_data = requests.get(url).json()
+    parsed_url = urlparse(url)
+    if parsed_url[0] == '':
+        return f'{url} is not a valid URL'
+
+    response = get(url)
+    if response.status_code != 200:
+        return f'Error fetching {url} (status_code: {response.status_code})'
+
+    character_data = response.json()
+    character_id = character_data['character']['id']
 
     return db.save_character_info(character_id, character_data)
 
