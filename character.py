@@ -35,7 +35,7 @@ def handler(bot, update):
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
     elif text.startswith('/talk'):
-        response = talk(text)
+        response = talk(bot, update)
     else:
         response = "Invalid command"
 
@@ -172,12 +172,15 @@ def attack_roll(username, text, db):
             f"\r\n*{dice_notation}*: {dice_rolls}")
 
 
-def talk(text):
+def talk(bot, update):
+    text = update.message.text
     command = text.replace('/talk', '').strip()
     sep = command.find(" ")
     character_name = command[:sep]
     message = command[sep + 1:]
     response = f"```\r\n{character_name} says:\r\n–{message}\r\n```"
+
+    bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
     return response
 
