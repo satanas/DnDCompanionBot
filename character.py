@@ -53,8 +53,12 @@ def import_character(text, db, get):
 
     character_data = response.json()
     character_id = character_data['character']['id']
+    character_name = character_data['character']['name']
 
-    return db.save_character_info(character_id, character_data)
+    if db.save_character_info(character_id, character_data) != None:
+        return f'Character "{character_name}" imported successfully!'
+    else:
+        return f'Something went wrong importing {character_name}'
 
 def get_weapons(text, db):
     character_name = text.replace('/weapons', '').strip()

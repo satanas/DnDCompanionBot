@@ -6,7 +6,8 @@ from character import talk, import_character
 
 CHARACTER_JSON = {
     'character': {
-        'id': '123456'
+        'id': '123456',
+        'name': 'John Wick'
     }
 }
 
@@ -60,6 +61,6 @@ class TestCharacter(unittest.TestCase):
         rtn = import_character(cmd, db, get)
 
         # expected
-        self.assertTrue(rtn)
         db.save_character_info.assert_called_with('123456', CHARACTER_JSON)
+        self.assertEqual(rtn, 'Character "John Wick" imported successfully!')
 
