@@ -72,7 +72,8 @@ def webhook(event, context):
             help_handler(bot, update)
         elif text.startswith('/import_char') or text.startswith('/attack_roll') or \
                 text.startswith('/initiative_roll') or text.startswith('/weapons') or \
-                text.startswith('/talk'):
+                text.startswith('/talk') or text.startswith('/say') or \
+                text.startswith('/whisper') or text.startswith('/yell'):
             character_handler(bot, update)
         elif text.find('turn') > 0:
             turn_handler(bot, update)
