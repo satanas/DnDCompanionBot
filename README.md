@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/satanas/DnDCompanionBot.svg?branch=master)](https://travis-ci.com/satanas/DnDCompanionBot)
+
 # Dungeons and Dragons Companion Bot
 `DnDCompanionBot` is a telegram bot to play Dungeons and Dragons. In the future, this bot should be able to track
 campaigns, character sheets and help the DM with management tasks.
