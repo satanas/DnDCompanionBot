@@ -1,8 +1,8 @@
 import unittest
-import tests.utils
+#import tests.utils
 
 from unittest.mock import patch, Mock, PropertyMock
-from character import talk, import_character
+from character import talk, chat,import_character
 
 CHARACTER_JSON = {
     'character': {
@@ -20,6 +20,26 @@ class TestCharacter(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
+    def test_yell(self):
+        cmd = '/y Beelzebub What the fuck is wrong with you?'
+        result = chat(cmd, 'y')
+        expected = "```\r\nBeelzebub says:```\r\n–WHAT THE FUCK IS WRONG WITH YOU?\r\n"
+
+        self.assertEqual(expected, result)
+
+    def test_say(self):
+        cmd = '/s Beelzebub What the fuck is wrong with you?'
+        result = chat(cmd, 's')
+        expected = "```\r\nBeelzebub says:```\r\n–What the fuck is wrong with you?\r\n"
+
+        self.assertEqual(expected, result)
+    
+    def test_whisper(self):
+        cmd = '/w Beelzebub What the fuck is wrong with you?'
+        result = chat(cmd, 'w')
+        expected = "```\r\nBeelzebub says:```\r\n–__What the fuck is wrong with you?__\r\n"
+
+        self.assertEqual(expected, result)
 
     def test_import_with_invalid_url(self):
         # conditions

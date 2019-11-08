@@ -31,6 +31,9 @@ CHARACTER_COMMANDS = [
     ("/attack_roll", "<character> <weapon> melee|range <distance> adv|disadv", "performs an attack roll on a character"),
     ("/initiative_roll", "<character>", "performs an initiative roll for a character"),
     ("/talk", "<character> <message>", "prints a message using in-game conversation format"),
+    ("/s", "<character> <message>", "prints a normal message using in-game conversation format"),
+    ("/w", "<character> <message>", "prints a whisper message using in-game conversation format"),
+    ("/y", "<character> <message>", "prints a yell message using in-game conversation format"),
 ]
 HELP_SUMMARY = (
     "Hi! I am the Dungeons & Dragons Companion Bot and I can help you manage a few things in your D&D "
