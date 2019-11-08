@@ -37,14 +37,14 @@ def handler(bot, update):
     elif text.startswith('/talk'):
         response = talk(text)
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-    elif text.startswith('/s'):
-        response = chat(text, 's')
+    elif text.startswith('/say'):
+        response = chat(text, 'say')
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)        
-    elif text.startswith('/y'):
-        response = chat(text, 'y')
+    elif text.startswith('/yell'):
+        response = chat(text, 'yell')
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-    elif text.startswith('/w'):
-        response = chat(text, 'w')
+    elif text.startswith('/whisper'):
+        response = chat(text, 'whisper')
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
     else:
         response = "Invalid command"
@@ -65,9 +65,9 @@ def chat(text, tone):
     sep = command.find(" ")
     character_name = command[:sep]
     message = command[sep + 1:]    
-    if tone == 'y':
+    if tone == 'yell':
         message = message.upper()
-    elif tone == 'w':
+    elif tone == 'whisper':
         message = f"__{message}__"
     response = f"```\r\n{character_name} says:```\r\n–{message}\r\n"  
 
