@@ -35,11 +35,43 @@ def handler(bot, update):
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
     elif text.startswith('/talk'):
-        response = talk(bot, update)
+        response = talk(text)
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    elif text.startswith('/say'):
+        response = chat(text, 'say')
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)        
+    elif text.startswith('/yell'):
+        response = chat(text, 'yell')
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    elif text.startswith('/whisper'):
+        response = chat(text, 'whisper')
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
     else:
         response = "Invalid command"
 
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+
+def talk(text):
+    command = text.replace('/talk', '').strip()
+    sep = command.find(" ")
+    character_name = command[:sep]
+    message = command[sep + 1:]
+    response = f"```\r\n{character_name} says:\r\n–{message}\r\n```"  
+
+    return response
+
+def chat(text, tone):
+    command = text.replace('/'+tone, '').strip()
+    sep = command.find(" ")
+    character_name = command[:sep]
+    message = command[sep + 1:]    
+    if tone == 'yell':
+        message = message.upper()
+    elif tone == 'whisper':
+        message = f"__{message}__"
+    response = f"```\r\n{character_name} says:```\r\n–{message}\r\n"  
+
+    return response    
 
 def import_character(text, db, get):
     url = text.replace('/import_char', '').strip()
@@ -170,19 +202,6 @@ def attack_roll(username, text, db):
     return (f"@{username} attack roll for {character_name} with {weapon_name} ({attack_type}):"
             f"\r\nFormula: {txt_formula}"
             f"\r\n*{dice_notation}*: {dice_rolls}")
-
-
-def talk(bot, update):
-    text = update.message.text
-    command = text.replace('/talk', '').strip()
-    sep = command.find(" ")
-    character_name = command[:sep]
-    message = command[sep + 1:]
-    response = f"```\r\n{character_name} says:\r\n–{message}\r\n```"
-
-    bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
-
-    return response
 
 #if __name__ == "__main__":
 #    db = Database()
