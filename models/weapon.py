@@ -8,7 +8,7 @@ class Weapon:
         self.equipped = True if json_data['equipped'] == "true" else False
         self.range = int(definition['range'])
         self.long_range = int(definition['longRange'])
-        self.properties = [p['name'] for p in definition['properties']]
+        #self.properties = [p['name'] for p in definition['properties']]
 
     def has_thrown(self):
         return True if "Thrown" in self.properties else False
