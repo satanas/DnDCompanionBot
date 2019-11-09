@@ -8,6 +8,7 @@ from models.character import Character
 from firebase import firebase
 from firebase.jsonutil import JSONEncoder
 
+FIREBASE_DB_URL = os.environ.get('FIREBASE_DB_URL')
 FIREBASE_API_SECRET = os.environ.get('FIREBASE_API_SECRET')
 
 RACE_URLS = {
@@ -25,7 +26,7 @@ RACE_URLS = {
 # https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-filtering
 class Database:
     def __init__(self):
-        self.firebase_db = firebase.FirebaseApplication('https://dndbot-c2cad.firebaseio.com', authentication=None)
+        self.firebase_db = firebase.FirebaseApplication(FIREBASE_DB_URL, authentication=None)
 
     def create_campaign(self, chat_id, name):
         campaign = Campaign(chat_id, name)
@@ -78,10 +79,20 @@ class Database:
     def save_character_info(self, character_id, character_data):
         return self.firebase_db.put('/characters', character_id, character_data, params={'auth': FIREBASE_API_SECRET})
 
+    def set_character_link(self, campaign_id, username, character_id):
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}/characters',
+                                      data={username: character_id},
+                                      params={'auth': FIREBASE_API_SECRET})
+
     def set_dm(self, campaign_id, user_id, username):
         return self.firebase_db.patch(f'/campaigns/{campaign_id}',
                                       data={'dm_user_id': user_id, 'dm_username': username},
                                       params={'auth': FIREBASE_API_SECRET})
+
+    def set_user_char(self, campaign_id, user_id, char_name):
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}',
+                                      data={'dm_user_id': user_id, 'dm_username': username},
+                                      params={'auth': FIREBASE_API_SECRET})        
 
 
 class CampaignActiveException(Exception):
