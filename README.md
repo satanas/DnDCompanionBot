@@ -50,6 +50,11 @@ $ /newbot
 $ cat serverless.env.yml
 TELEGRAM_TOKEN: <your_token>
 
+# Put on your os ENV for local tests
+TELEGRAM_TOKEN: <your_telegram_bot_token>
+FIREBASE_DB_URL = <your_firebase_realtime_database_url)
+FIREBASE_API_SECRET = <your_firebase_realtime_database_secret>
+
 # Deploy it!
 $ serverless deploy
 
@@ -72,6 +77,11 @@ $ pip3 install -r requirements.txt
 And finally, run the tests:
 ```
 $ nose2 -v
+```
+
+Or run local:
+```
+$ python local.py
 ```
 
 ## Notes
