@@ -8,27 +8,33 @@ campaigns, character sheets and help the DM with management tasks.
 General commands | Action
 --------|-------
 /start | starts the DnDCompanionBot
-/roll [expression] | rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)
-/charsheeet [username] | returns the character sheet associated with username
+/roll <expression> | rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)
+/charsheet <username> | returns the character sheet associated with username
+/combatsheet | returns the link of the combat cheatsheet
 /help | shows this help message
 
 Campaign commands | Action
 --------|-------
 /start_campaign | starts a new campaign in the invoked group
 /close_campaign | closes an active campaign
-/import_char [json_url] | imports the JSON data of a character
-/set_turns [p1],[p2]... | creates a list with the order of players in a combat
-/turn | shows the current player in the combat order list
-/next_turn | moves the turn to the next player in the combat order list
-/set_dm [username] | sets the DM of the current campaign
+/set_turns <username1>,...<usernameN> | creates a list with the order of players for a given round
+/turn | shows the current player in the turns list
+/next_turn | moves to the next player in the turns list
+/set_dm <username> | sets the username of the DM for the current campaign
+/import_char <url> | imports the JSON data of a character from a URL
+/link_char <char_id> <username> OR <char_id> | links character to target username or self username
 /dm | shows the DM for the current campaign
 
 Character commands | Action
 --------|-------
-/weapons [character] | shows the list of weapons of a character
-/attack_roll [character] [weapon] [attack](melee|range) [distance] [adv|disadv] | performs an attack roll
-/initiative_roll [character] | performs an initiative roll for the character
-/talk [character] [message] | prints message using an in-game conversation format
+/weapons <character> | shows the list of weapons of a character
+/attack_roll <character> <weapon> melee|range <distance> adv|disadv | performs an attack roll on a character
+/initiative_roll <character> | performs an initiative roll for a character
+/talk <character> <message> | prints a message using in-game conversation format
+/say <character> <message> | prints a normal message using in-game conversation format
+/whisper <character> <message> | prints a whisper message using in-game conversation format
+/yell <character> <message> | prints a yell message using in-game conversation format
+
 
 ## What do I need?
 - A AWS key configured locally, see [here](https://serverless.com/framework/docs/providers/aws/guide/credentials/).
@@ -46,14 +52,11 @@ $ npm install
 # Get a bot from Telegram, sending this message to @BotFather
 $ /newbot
 
-# Put the token received into a file called serverless.env.yml, like this
-$ cat serverless.env.yml
+# Put the token received into a file called serverless.env.yml, along with your Firebase configuration details. Like this:
+# file: serverless.env.yml
 TELEGRAM_TOKEN: <your_token>
-
-# Put on your os ENV for local tests
-TELEGRAM_TOKEN: <your_telegram_bot_token>
-FIREBASE_DB_URL = <your_firebase_realtime_database_url)
-FIREBASE_API_SECRET = <your_firebase_realtime_database_secret>
+FIREBASE_DB_URL: <your_firebase_realtime_database_url>
+FIREBASE_API_SECRET: <your_firebase_realtime_database_secret>
 
 # Deploy it!
 $ serverless deploy
@@ -62,10 +65,16 @@ $ serverless deploy
 $ curl -X POST https://<your_url>.amazonaws.com/dev/set_webhook
 ```
 
-## Testing locally
+## Installing locally
 
-Make sure you use pip and all tools for Python 3, then install all dependencies:
+Define the following ENV variables for your OS:
+```
+TELEGRAM_TOKEN: <your_telegram_bot_token>
+FIREBASE_DB_URL: <your_firebase_realtime_database_url>
+FIREBASE_API_SECRET: <your_firebase_realtime_database_secret>
+```
 
+Then, make sure you use pip and all tools for Python 3 and install all dependencies:
 ```
 $ pip3 install virtualenv
 $ virtualenv venv
@@ -74,14 +83,20 @@ $ source venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-And finally, run the tests:
-```
-$ nose2 -v
-```
+## Running the bot locally
 
-Or run local:
+Follow the instructions from the section [Installing locally](#installing-locally), and then run the bot:
+
 ```
 $ python local.py
+```
+
+## Running tests locally
+
+Follow the instructions from the section [Installing locally](#installing-locally), and then run the tests:
+
+```
+$ nose2 -v
 ```
 
 ## Notes
