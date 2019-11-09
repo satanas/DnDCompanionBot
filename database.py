@@ -62,19 +62,31 @@ class Database:
                                       data={'turns': turns, 'turn_index': '0'},
                                       params={'auth': FIREBASE_API_SECRET})
 
-    def get_character(self, character_name):
-        result = self.firebase_db.get('/', 'characters', params={'orderBy': '\"character/name\"',
-                                                                    'equalTo': f'\"{character_name}\"',
-                                                                    'auth': FIREBASE_API_SECRET})
+    def get_character_id(self, campaign_id, username):
+        result = self.firebase_db.get('/', f'campaigns/{campaign_id}/characters', params={'orderBy': '\"$key\"',
+                                                                 'equalTo': '\"'+username+'\"',
+                                                                 'auth': FIREBASE_API_SECRET})
 
+        if not result:
+            return None
+
+        return result[username]
+        
+    def get_character(self, character, find_by_id):
+        if find_by_id:
+            result = self.firebase_db.get('/', f'/characters/{character}', params={'auth': FIREBASE_API_SECRET})
+        else:
+            result = self.firebase_db.get('/', 'characters', params={'orderBy': '\"character/name\"',
+                                                                    'equalTo': f'\"{character}\"',
+                                                                    'auth': FIREBASE_API_SECRET})
         if not result:
             return None
 
         json_data = result[list(result.keys())[0]]
 
-        race = json_data['character']['race']['fullName']
+        race = json_data['race']['fullName'] if find_by_id else json_data['character']['race']['fullName']
         race_data = requests.get(RACE_URLS[race]).json()
-        return Character(json_data, race_data)
+        return Character(json_data, race_data, find_by_id)
 
     def save_character_info(self, character_id, character_data):
         return self.firebase_db.put('/characters', character_id, character_data, params={'auth': FIREBASE_API_SECRET})
