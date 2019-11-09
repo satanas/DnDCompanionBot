@@ -23,6 +23,7 @@ CAMPAIGN_COMMANDS = [
     ("/next_turn", None, "moves to the next player in the turns list"),
     ("/set_dm", "<username>", "sets the username of the DM for the current campaign"),
     ("/import_char", "<url>", "imports the JSON data of a character from a URL"),
+    ("/link_char", "<char_id> <username> OR <char_id>", "links character to target username or self username"),
     ("/dm", None, "shows the DM for the current campaign"),
 ]
 
