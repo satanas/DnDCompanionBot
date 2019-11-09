@@ -28,6 +28,8 @@ def handler(bot, update):
 
     if text.startswith('/import_char'):
         response = import_character(text, db, requests.get)
+    if text.startswith('/link_char'):
+        response = link_character(text, db, chat_id, username)
     elif text.startswith('/attack_roll'):
         response = attack_roll(username, text, db)
     elif text.startswith('/initiative_roll'):
@@ -91,6 +93,22 @@ def import_character(text, db, get):
         return f'Character "{character_name}" imported successfully!'
     else:
         return f'Something went wrong importing {character_name}'
+
+def link_character(text, db, chat_id, username):
+    command = text.replace('/link_char', '').strip()
+    params = [u.strip() for u in command.split(' ')]
+
+    if (len(params) > 1):
+        character_id = params[0]
+        player = params[1].replace('@', '').strip()
+    else:
+        character_id = params[0]
+        player = username
+
+    campaign_id, campaign = db.get_campaign(chat_id)
+    db.set_character_link(campaign_id, player, character_id)
+
+    return f'Character with id {character_id} linked to {player} successfully!'
 
 def get_weapons(text, db):
     character_name = text.replace('/weapons', '').strip()
