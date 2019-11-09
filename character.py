@@ -36,6 +36,8 @@ def handler(bot, update):
         response = initiative_roll(username, text, db)
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
+    elif text.startswith('/status'):
+        response = get_status(text, db, chat_id, username)
     elif text.startswith('/talk'):
         response = talk(text)
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
@@ -110,10 +112,36 @@ def link_character(text, db, chat_id, username):
 
     return f'Character with id {character_id} linked to {player} successfully!'
 
+def get_status(text, db, chat_id, username):
+    param = text.replace('/status', '').strip()
+    param = param.replace('@', '').strip()
+
+    campaign_id, campaign = db.get_campaign(chat_id)
+
+    if not param:
+        character_param = db.get_character_id(campaign_id, username)
+    else: 
+        character_param = db.get_character_id(campaign_id, param)
+
+    if character_param == None:
+        character_param = param
+        find_by_id = False
+    else:
+        find_by_id = True
+
+    char = db.get_character(character_param, find_by_id)
+
+    if char == None:
+        return f'Character not found'
+    else:
+        return (f'{char.name} | {char.race} {char._class} Level {char.level}\r\n'
+                f'HP: {char.current_hit_points}/{char.max_hit_points} | XP: {char.current_experience}')
+
 def get_weapons(text, db):
     character_name = text.replace('/weapons', '').strip()
+    find_by_id = False
 
-    character = db.get_character(character_name)
+    character = db.get_character(character_name, find_by_id)
     if character == None:
         return f'Character "{character_name}" not found'
 
@@ -125,8 +153,9 @@ def get_weapons(text, db):
 
 def initiative_roll(username, text, db):
     character_name = text.replace('/initiative_roll', '').strip()
+    find_by_id = False
 
-    character = db.get_character(character_name)
+    character = db.get_character(character_name, find_by_id)
     if character == None:
         return f'Character "{character_name}" not found'
 
@@ -134,7 +163,6 @@ def initiative_roll(username, text, db):
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
     return f'@{username} initiave roll for {character_name} ({dice_notation}): {dice_rolls}'
-
 
 def ability_check(chat_id, username, ability):
     pass
@@ -162,8 +190,9 @@ def attack_roll(username, text, db):
     prof = ''
     base_notation = '1d20'
     distance = int(distance)
+    find_by_id = False
 
-    character = db.get_character(character_name)
+    character = db.get_character(character_name, find_by_id)
     if character == None:
         return f'Character "{character_name}" not found'
 

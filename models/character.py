@@ -4,32 +4,35 @@ from models.armor import Armor
 from models.weapon import Weapon
 
 class Character:
-    def __init__(self, json_data, race_data):
-        self.id = json_data['character']['id']
-        self.beyond_url = json_data['character']['readonlyUrl']
-        self.name = json_data['character']['name']
-        self.level = int(json_data['character']['classes'][0]['level'])
-        self.race = json_data['character']['race']['fullName']
-        self.str = int(json_data['character']['stats'][0]['value']) + int(race_data['ability_bonuses'][0])
-        self.dex = int(json_data['character']['stats'][1]['value']) + int(race_data['ability_bonuses'][1])
-        self.con = int(json_data['character']['stats'][2]['value']) + int(race_data['ability_bonuses'][2])
-        self.int = int(json_data['character']['stats'][3]['value']) + int(race_data['ability_bonuses'][3])
-        self.wis = int(json_data['character']['stats'][4]['value']) + int(race_data['ability_bonuses'][4])
-        self.cha = int(json_data['character']['stats'][5]['value']) + int(race_data['ability_bonuses'][5])
+    def __init__(self, json_data, race_data, by_id):
+        character = json_data if by_id else json_data['character']
+        self.id = character['id']
+        self.beyond_url = character['readonlyUrl']
+        self.name = character['name']
+        self.level = int(character['classes'][0]['level'])
+        self.race = character['race']['fullName']
+        self._class = character['classes'][0]['definition']['name']
+        self.str = int(character['stats'][0]['value']) + int(race_data['ability_bonuses'][0])
+        self.dex = int(character['stats'][1]['value']) + int(race_data['ability_bonuses'][1])
+        self.con = int(character['stats'][2]['value']) + int(race_data['ability_bonuses'][2])
+        self.int = int(character['stats'][3]['value']) + int(race_data['ability_bonuses'][3])
+        self.wis = int(character['stats'][4]['value']) + int(race_data['ability_bonuses'][4])
+        self.cha = int(character['stats'][5]['value']) + int(race_data['ability_bonuses'][5])
         self.str_mod = math.floor((self.str - 10) / 2)
         self.dex_mod = math.floor((self.dex - 10) / 2)
         self.con_mod = math.floor((self.con - 10) / 2)
         self.int_mod = math.floor((self.int - 10) / 2)
         self.wis_mod = math.floor((self.wis - 10) / 2)
         self.cha_mod = math.floor((self.cha - 10) / 2)
-        self.walking_speed = int(json_data['character']['race']['weightSpeeds']['normal']['walk'])
-        self.max_hit_points = int(json_data['character']['baseHitPoints']) + self.con_mod
-        self.current_hit_points = self.max_hit_points - int(json_data['character']['removedHitPoints'])
+        self.walking_speed = int(character['race']['weightSpeeds']['normal']['walk'])
+        self.max_hit_points = int(character['baseHitPoints']) + self.con_mod
+        self.current_hit_points = self.max_hit_points - int(character['removedHitPoints'])
+        self.current_experience = int(character['currentXp'])
         self.initiative = self.dex_mod
-        self.weapons = [Weapon(x) for x in json_data['character']['inventory'] if x['definition']['filterType'] == "Weapon"]
-        self.armor = [Armor(x) for x in json_data['character']['inventory'] if x['definition']['filterType'] == "Armor"]
-        self.proficiencies = [x['friendlySubtypeName'] for x in json_data['character']['modifiers']['class'] if x['type'] == 'proficiency']
-        self.size = json_data['character']['race']['size']
+        self.weapons = [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
+        self.armor = [Armor(x) for x in character['inventory'] if x['definition']['filterType'] == "Armor"]
+        self.proficiencies = [x['friendlySubtypeName'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
+        self.size = character['race']['size']
         self.proficiency = math.floor((self.level + 7) / 4)
 
 
