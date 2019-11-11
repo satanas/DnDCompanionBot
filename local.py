@@ -5,7 +5,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from roll import handler as roll_handler
 from charsheet import handler as charsheet_handler
-from help import handler as help_handler
+#from help import handler as help_handler
 from character import handler as character_handler
 from turns import handler as turn_handler
 from dm import handler as dm_handler
@@ -56,7 +56,7 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('start', start))                   
+    dp.add_handler(CommandHandler('start', start))
 
     dp.add_handler(CommandHandler('roll', roll))
     dp.add_handler(CommandHandler('charsheet', charsheet))
