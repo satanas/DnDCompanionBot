@@ -27,6 +27,8 @@ class Character:
         self.walking_speed = int(character['race']['weightSpeeds']['normal']['walk'])
         self.max_hit_points = int(character['baseHitPoints']) + self.con_mod
         self.current_hit_points = self.max_hit_points - int(character['removedHitPoints'])
+        self.hit_dice = int(character['classes'][0]['definition']['hitDice'])
+        self.hit_dice_used = int(character['classes'][0]['hitDiceUsed'])
         self.current_experience = int(character['currentXp'])
         self.initiative = self.dex_mod
         self.weapons = [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]

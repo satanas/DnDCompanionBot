@@ -3,13 +3,8 @@ import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from roll import handler as roll_handler
-from charsheet import handler as charsheet_handler
-#from help import handler as help_handler
-from character import handler as character_handler
-from turns import handler as turn_handler
-from dm import handler as dm_handler
-from campaign import handler as campaign_handler
+from main import start_handler, help_handler
+from commands import GENERAL_COMMANDS, CAMPAIGN_COMMANDS, CHARACTER_COMMANDS
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
@@ -18,28 +13,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
-def start(update, context):
-    chat_id = context.message.chat.id
-    update.send_message(chat_id=chat_id, text="I'm a bot, please talk to me!")
-
-def roll(bot, update):
-    roll_handler(bot, update)
-
-def charsheet(bot, update):
-    charsheet_handler(bot, update)
-
-def help(bot, update):
-    help_handler(bot, update)
-
-def turn(bot, update):
-    turn_handler(bot, update)
-
-def campaign(bot, update):
-    campaign_handler(bot, update)  
-
-def character(bot, update):
-    character_handler(bot, update)  
 
 def unknown(update, context):
     chat_id = context.message.chat.id
@@ -56,30 +29,20 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('start', start_handler))
+    dp.add_handler(CommandHandler('help', help_handler))
 
-    dp.add_handler(CommandHandler('roll', roll))
-    dp.add_handler(CommandHandler('charsheet', charsheet))
-    dp.add_handler(CommandHandler('help', help))
-
-    dp.add_handler(CommandHandler('set_turns', turn))
-    dp.add_handler(CommandHandler('turn', turn))
-    dp.add_handler(CommandHandler('next_turn', turn))
-    dp.add_handler(CommandHandler('prev_turn', turn))
-
-    dp.add_handler(CommandHandler('start_campaign', campaign))
-    dp.add_handler(CommandHandler('close_campaign', campaign))
-
-    dp.add_handler(CommandHandler('talk', character))
-    dp.add_handler(CommandHandler('say', character))
-    dp.add_handler(CommandHandler('whisper', character))
-    dp.add_handler(CommandHandler('yell', character))
-
-    dp.add_handler(CommandHandler('import_char', character))
-    dp.add_handler(CommandHandler('link_char', character))
-
-    dp.add_handler(CommandHandler('status', character))
-    dp.add_handler(CommandHandler('weapons', character))
+    for command in GENERAL_COMMANDS:
+        command_key = command
+        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), GENERAL_COMMANDS[command][0]))
+    
+    for command in CAMPAIGN_COMMANDS:
+        command_key = command
+        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), CAMPAIGN_COMMANDS[command][0]))
+    
+    for command in CHARACTER_COMMANDS:
+        command_key = command
+        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), CHARACTER_COMMANDS[command][0]))
 
     dp.add_handler(MessageHandler(Filters.command, unknown))
 

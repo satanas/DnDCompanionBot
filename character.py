@@ -23,7 +23,7 @@ SIZE_MODIFIER = {
 def handler(bot, update):
     db = Database()
     chat_id = update.message.chat.id
-    text = update.message.text
+    text = update.message.text.replace(f'@{bot.get_me().username}', '').strip()
     username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
 
     if text.startswith('/import_char'):
@@ -34,6 +34,8 @@ def handler(bot, update):
         response = attack_roll(username, text, db)
     elif text.startswith('/initiative_roll'):
         response = initiative_roll(username, text, db)
+    elif text.startswith('/short_rest_roll'):
+        response = short_rest_roll(text, db, chat_id, username)
     elif text.startswith('/weapons'):
         response = get_weapons(text,db)
     elif text.startswith('/status'):
@@ -43,7 +45,7 @@ def handler(bot, update):
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
     elif text.startswith('/say'):
         response = chat(text, 'say')
-        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)        
+        bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
     elif text.startswith('/yell'):
         response = chat(text, 'yell')
         bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
@@ -113,23 +115,8 @@ def link_character(text, db, chat_id, username):
     return f'Character with id {character_id} linked to {player} successfully!'
 
 def get_status(text, db, chat_id, username):
-    param = text.replace('/status', '').strip()
-    param = param.replace('@', '').strip()
-
-    campaign_id, campaign = db.get_campaign(chat_id)
-
-    if not param:
-        character_param = db.get_character_id(campaign_id, username)
-    else: 
-        character_param = db.get_character_id(campaign_id, param)
-
-    if character_param == None:
-        character_param = param
-        find_by_id = False
-    else:
-        find_by_id = True
-
-    char = db.get_character(character_param, find_by_id)
+    text = text.replace('/status', '').strip()
+    char = get_linked_character(text, db, chat_id, username)
 
     if char == None:
         return f'Character not found'
@@ -163,9 +150,6 @@ def initiative_roll(username, text, db):
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
     return f'@{username} initiave roll for {character_name} ({dice_notation}): {dice_rolls}'
-
-def ability_check(chat_id, username, ability):
-    pass
 
 def attack_roll(username, text, db):
     args = [a.strip() for a in text.replace('/attack_roll ', '').split(' ')]
@@ -249,6 +233,44 @@ def attack_roll(username, text, db):
     return (f"@{username} attack roll for {character_name} with {weapon_name} ({attack_type}):"
             f"\r\nFormula: {txt_formula}"
             f"\r\n*{dice_notation}*: {dice_rolls}")
+
+def short_rest_roll(text, db, chat_id, username):
+    text = text.replace('/short_rest_roll', '').strip()
+    char = get_linked_character(text, db, chat_id, username)
+
+    if char == None:
+        return f'Character not found'
+
+    if char.hit_dice_used == char.level:
+        return f'{char.name} spent all the hit dice already. You need to take a long rest to replenish them.'
+
+    dice_notation = f'1d{char.hit_dice}+{char.con_mod}'
+    results = roll(dice_notation)
+    dice_rolls = results[list(results.keys())[0]][0]
+    return f'@{username} short rest roll for {char.name} ({dice_notation}): {dice_rolls}'
+
+def ability_check(chat_id, username, ability):
+    pass
+
+def get_linked_character(text, db, chat_id, username):
+    param = text.replace('@', '').strip()
+
+    campaign_id, campaign = db.get_campaign(chat_id)
+
+    if not param:
+        character_param = db.get_character_id(campaign_id, username)
+    else: 
+        character_param = db.get_character_id(campaign_id, param)
+
+    if character_param == None:
+        character_param = param
+        find_by_id = False
+    else:
+        find_by_id = True
+
+    char = db.get_character(character_param, find_by_id)
+
+    return char
 
 #if __name__ == "__main__":
 #    db = Database()
