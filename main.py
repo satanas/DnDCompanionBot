@@ -73,30 +73,6 @@ def webhook(event, context):
         else:
             return ERROR_RESPONSE
 
-        #text = update.message.text
-
-        #if text == '/start':
-        #    start(bot, update)
-        #elif text.startswith('/roll'):
-        #    roll_handler(bot, update)
-        #elif text.startswith('/charsheet'):
-        #    charsheet_handler(bot, update)
-        #elif text.startswith('/help'):
-        #    help_handler(bot, update)
-        #elif text.startswith('/import_char') or text.startswith('/attack_roll') or \
-        #        text.startswith('/initiative_roll') or text.startswith('/weapons') or \
-        #        text.startswith('/talk') or text.startswith('/say') or \
-        #        text.startswith('/whisper') or text.startswith('/yell'):
-        #    character_handler(bot, update)
-        #elif text.find('turn') > 0:
-        #    turn_handler(bot, update)
-        #elif text.startswith('/set_dm') or text.startswith('/dm'):
-        #    dm_handler(bot, update)
-        #elif text.find('campaign') > 0:
-        #    campaign_handler(bot, update)
-
-        #return OK_RESPONSE
-
     return ERROR_RESPONSE
 
 

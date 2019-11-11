@@ -14,21 +14,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-def roll(bot, update):
-    roll_handler(bot, update)
-
-def charsheet(bot, update):
-    charsheet_handler(bot, update)
-
-def turn(bot, update):
-    turn_handler(bot, update)
-
-def campaign(bot, update):
-    campaign_handler(bot, update)  
-
-def character(bot, update):
-    character_handler(bot, update)  
-
 def unknown(update, context):
     chat_id = context.message.chat.id
     update.send_message(chat_id=chat_id, text="Sorry, I didn't understand that command.")

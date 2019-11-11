@@ -8,11 +8,8 @@ from campaign import handler as campaign_handler
     
 # cmd, handler, args, description
 GENERAL_COMMANDS = {
-    #"/start": (start, None, "starts the DnDCompanionBot"),
     "/roll": (roll_handler, "<expression>", "rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)"),
     "/charsheet": (charsheet_handler, "<username>", "returns the character sheet associated with username"),
-    #"/combatsheet": (None, None, "returns the link of the combat cheatsheet"),
-    #"/help": (help_handler, None, "shows this help message"),
 }
 
 CAMPAIGN_COMMANDS = {
