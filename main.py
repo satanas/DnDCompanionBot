@@ -56,6 +56,8 @@ def webhook(event, context):
         instruction = update.message.text
 
         handler = None
+        if command == '/start':
+            start_handler()
         if command == '/help':
             help_handler()
         elif command in GENERAL_COMMANDS:
@@ -115,6 +117,10 @@ def set_webhook(event, context):
         return OK_RESPONSE
 
     return ERROR_RESPONSE
+
+def start_handler(bot, update):
+    chat_id = update.message.chat.id
+    bot.send_message(chat_id=chat_id, text="I'm a bot, please talk to me!")
 
 def help_handler(bot, update):
     help_message = "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
