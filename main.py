@@ -4,7 +4,7 @@ import logging
 import telegram
 
 from commands import command_handler, default_handler, is_command, parse_command
-from exceptions import CommandNotFound, CharacterNotFound
+from exceptions import CommandNotFound, CharacterNotFound, CampaignNotFound
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -63,6 +63,8 @@ def webhook(event, context):
             default_handler(bot, update, f'Command {command} not found')
         except CharacterNotFound:
             default_handler(bot, update, f'Character not found. Cannot execute {update.message.text}')
+        except CampaignNotFound:
+            default_handler(bot, update, f'Campaign not found. There must be an active campaign')
 
     return OK_RESPONSE
 

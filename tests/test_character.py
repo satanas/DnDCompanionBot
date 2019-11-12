@@ -1,7 +1,7 @@
 import unittest
 
 from unittest.mock import patch, Mock, PropertyMock
-from handlers.character import talk, import_character
+from handlers.character import talk, import_character, link_character
 
 CHARACTER_JSON = {
     'character': {
@@ -78,4 +78,36 @@ class TestCharacter(unittest.TestCase):
         # expected
         db.save_character_info.assert_called_with('123456', CHARACTER_JSON)
         self.assertEqual(rtn, 'Character "John Wick" imported successfully!')
+
+    def test_link_character_without_params(self):
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.set_character_link = Mock(return_value=True)
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+
+        # execution
+        args = '987654321'
+        rtn = link_character(args, db, chat_id, username)
+
+        # expected
+        db.set_character_link.assert_called_with(campaign_id, username, args)
+        self.assertEqual('Character with id 987654321 linked to foo successfully!', rtn)
+
+    def test_link_character_with_params(self):
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.set_character_link = Mock(return_value=True)
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+
+        # execution
+        args = '987654321 @foobar'
+        rtn = link_character(args, db, chat_id, username)
+
+        # expected
+        db.set_character_link.assert_called_with(campaign_id, 'foobar', '987654321')
+        self.assertEqual('Character with id 987654321 linked to foobar successfully!', rtn)
 

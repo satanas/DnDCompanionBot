@@ -102,3 +102,7 @@ $ nose2 -v
 
 ## Notes
 AWS credentials saved on your machine at ~/.aws/credentials.
+
+## References
+* https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/README.md
+* https://github.com/treetrnk/rollem-telegram-bot/blob/master/bot.py

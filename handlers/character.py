@@ -69,8 +69,7 @@ def link_character(args, db, chat_id, username):
 
     character_id = params[0]
     if (len(params) > 1):
-        character_id = params[1]
-        player = params[0].replace('@', '').strip()
+        player = params[1].replace('@', '').strip()
     else:
         player = username
 
