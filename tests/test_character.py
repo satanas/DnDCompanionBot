@@ -1,7 +1,7 @@
 import unittest
 
 from unittest.mock import patch, Mock, PropertyMock
-from handlers.character import talk, chat,import_character
+from handlers.character import talk, import_character
 
 CHARACTER_JSON = {
     'character': {
@@ -12,31 +12,27 @@ CHARACTER_JSON = {
 
 class TestCharacter(unittest.TestCase):
 
-    def test_talk(self):
-        cmd = '/talk Beelzebub What the fuck is wrong with you?'
-        result = talk(cmd)
-        expected = "```\r\nBeelzebub says:\r\n–What the fuck is wrong with you?\r\n```"
-
-        self.assertEqual(expected, result)
-
     def test_yell(self):
-        cmd = '/yell Beelzebub What the fuck is wrong with you?'
-        result = chat(cmd, 'yell')
-        expected = "```\r\nBeelzebub says:```\r\n–WHAT THE FUCK IS WRONG WITH YOU?\r\n"
+        cmd = '/yell'
+        txt_args = 'Beelzebub What the fuck is wrong with you?'
+        result = talk(cmd, txt_args)
+        expected = "```\r\nBeelzebub says:\r\n–WHAT THE FUCK IS WRONG WITH YOU?\r\n```"
 
         self.assertEqual(expected, result)
 
     def test_say(self):
-        cmd = '/say Beelzebub What the fuck is wrong with you?'
-        result = chat(cmd, 'say')
-        expected = "```\r\nBeelzebub says:```\r\n–What the fuck is wrong with you?\r\n"
+        cmd = '/say'
+        txt_args = 'Beelzebub What the fuck is wrong with you?'
+        result = talk(cmd, txt_args)
+        expected = "```\r\nBeelzebub says:\r\n–What the fuck is wrong with you?\r\n```"
 
         self.assertEqual(expected, result)
 
     def test_whisper(self):
-        cmd = '/whisper Beelzebub What the fuck is wrong with you?'
-        result = chat(cmd, 'whisper')
-        expected = "```\r\nBeelzebub says:```\r\n–__What the fuck is wrong with you?__\r\n"
+        cmd = '/whisper'
+        txt_args = 'Beelzebub What the fuck is wrong with you?'
+        result = talk(cmd, txt_args)
+        expected = "```\r\nBeelzebub says:\r\n–__What the fuck is wrong with you?__\r\n```"
 
         self.assertEqual(expected, result)
 
@@ -46,7 +42,7 @@ class TestCharacter(unittest.TestCase):
         get = Mock()
 
         # execution
-        cmd = '/import_char hello_world'
+        cmd = 'hello_world'
         rtn = import_character(cmd, db, get)
 
         # expected
@@ -60,7 +56,7 @@ class TestCharacter(unittest.TestCase):
         get = Mock(return_value=response)
 
         # execution
-        cmd = '/import_char http://example.com/my/character'
+        cmd = 'http://example.com/my/character'
         rtn = import_character(cmd, db, get)
 
         # expected
@@ -76,7 +72,7 @@ class TestCharacter(unittest.TestCase):
         get = Mock(return_value=response)
 
         # execution
-        cmd = '/import_char http://example.com/my/character'
+        cmd = 'http://example.com/my/character'
         rtn = import_character(cmd, db, get)
 
         # expected

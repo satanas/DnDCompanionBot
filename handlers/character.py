@@ -41,7 +41,7 @@ def handler(bot, update, command, txt_args):
     elif command == '/status':
         response = get_status(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
-        response = talk(command, txt_args, db, chat_id, username)
+        response = talk(command, txt_args)
         #bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
@@ -191,18 +191,17 @@ def get_status(other_username, db, chat_id, username):
     return (f'{character.name} | {character.race} {character._class} Level {character.level}\r\n'
             f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}')
 
-#response = talk(command, txt_args, db, chat_id, username)
-def talk(command, txt_args, db, chat_id, username):
+def talk(command, txt_args):
     args = txt_args.split(' ')
     if len(args) < 2:
         return ('Invalid syntax. Usage:'
                 '\r\n' + command +' <character> <message>')
 
     character_name = args[0]
-    message = args[1]
-    if command == 'yell':
+    message = ' '.join(args[1:])
+    if command == '/yell':
         message = message.upper()
-    elif command == 'whisper':
+    elif command == '/whisper':
         message = f"__{message}__"
 
     return f"```\r\n{character_name} says:\r\n–{message}\r\n```"
