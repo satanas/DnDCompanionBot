@@ -1,7 +1,9 @@
 import sys
 
+from commands import GENERAL_COMMANDS, CAMPAIGN_COMMANDS, CHARACTER_COMMANDS, ALL_COMMANDS
+
 # To update commands in README.md:
-# python3 help.py --tables
+# python3 help.py --mdtables
 #
 # To update commands in @botfather:
 # python3 help.py --botfather
@@ -30,11 +32,11 @@ CHARACTER_COMMANDS_TABLE_HEADER = (
 def help_in_markdown_tables():
     return "{}\n{}\n\n{}\n{}\n\n{}\n{}".format(
                 GENERAL_COMMANDS_TABLE_HEADER,
-                '\n'.join([concat_command(c, True, '|') for c in GENERAL_COMMANDS]),
+                '\n'.join([formatting_command(cmd, info, True, '|', True) for cmd, info in GENERAL_COMMANDS.items()]),
                 CAMPAIGN_COMMANDS_TABLE_HEADER,
-                '\n'.join([concat_command(c, True, '|') for c in CAMPAIGN_COMMANDS]),
+                '\n'.join([formatting_command(cmd, info, True, '|', True) for cmd, info in CAMPAIGN_COMMANDS.items()]),
                 CHARACTER_COMMANDS_TABLE_HEADER,
-                '\n'.join([concat_command(c, True, '|') for c in CHARACTER_COMMANDS])
+                '\n'.join([formatting_command(cmd, info, True, '|', True) for cmd, info in CHARACTER_COMMANDS.items()])
             )
 
 # Markdown with no tables. Used for the response of /help
@@ -47,10 +49,29 @@ def help_for_botfather():
     def escape(cmd):
         return cmd[1:]
 
-    command_list = GENERAL_COMMANDS + CAMPAIGN_COMMANDS + CHARACTER_COMMANDS
-    return '\n'.join([escape(concat_command(c)) for c in command_list]).strip()
+    return '\n'.join([escape(formatting_command(cmd, info)) for cmd, info in ALL_COMMANDS.items()]).strip()
 
+def help_handler(bot, update):
+    help_message = "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
+                HELP_SUMMARY,
+                '\n'.join([concat_command(c, True, '-', escape) for c in GENERAL_COMMANDS]),
+                '\n'.join([concat_command(c, True, '-', escape) for c in CAMPAIGN_COMMANDS]),
+                '\n'.join([concat_command(c, True, '-', escape) for c in CHARACTER_COMMANDS])
+            )
+    bot.send_message(chat_id=update.message.chat_id, text=help_message, parse_mode="Markdown", disable_web_page_preview=True)
 
+def formatting_command(cmd, info, add_params=False, separator='-', escape=False):
+    params = ', '.join(info[1]) + ' ' if add_params is True and info[1] is not None else ''
+    desc = info[2]
+    formatted_cmd = f"{cmd} {params}{separator} {desc}"
+    return formatted_cmd if escape is False else escape_md(formatted_cmd)
+
+def escape_md(text):
+    text = text.replace('_', '\_')
+    text = text.replace('<', '\<')
+    text = text.replace('>', '\>')
+    text = text.replace('|', '\|')
+    return text
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -59,5 +80,5 @@ if __name__ == "__main__":
             print(help_for_botfather())
         elif fmt == "--markdown" or fmt == "-m":
             print(help_in_markdown())
-        elif fmt == "--tables" or fmt == "-t":
+        elif fmt == "--mdtables" or fmt == "-t":
             print(help_in_markdown_tables())

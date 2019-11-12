@@ -3,7 +3,7 @@ import json
 import logging
 import telegram
 
-from commands import GENERAL_COMMANDS, CAMPAIGN_COMMANDS, CHARACTER_COMMANDS
+from commands import command_handler, default_handler, is_command
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -38,7 +38,6 @@ def configure_telegram():
 
     return telegram.Bot(TELEGRAM_TOKEN)
 
-# TODO: Add command to generate commands list for BotFather
 def webhook(event, context):
     """
     Runs the Telegram webhook.
@@ -49,29 +48,20 @@ def webhook(event, context):
 
     if event.get('httpMethod') == 'POST' and event.get('body'):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
-        if update.message == None or update.message.text == None or update.message.text == '':
-            return OK_RESPONSE
 
-        command = update.message.text.split(' ')[0]
-        instruction = update.message.text
-
-        handler = None
-        if command == '/start':
-            start_handler()
-        if command == '/help':
-            help_handler()
-        elif command in GENERAL_COMMANDS:
-            handler = GENERAL_COMMANDS[command][0]
-        elif command in CAMPAIGN_COMMANDS:
-            handler = CAMPAIGN_COMMANDS[command][0]
-        elif command in CHARACTER_COMMANDS:
-            handler = CHARACTER_COMMANDS[command][0]
-
-        if handler != None:
-            handler(instruction)
-            return OK_RESPONSE
-        else:
+        if not is_command(update):
             return ERROR_RESPONSE
+
+        command = parse_command(update.message.text)
+
+        try:
+            handler = command_handler(command)
+        except CommandNotFound:
+            default_handler(bot, update, f'Command {command} not found')
+            return OK_RESPONSE
+
+        handler(bot, update, command)
+        return OK_RESPONSE
 
     return ERROR_RESPONSE
 
@@ -94,25 +84,3 @@ def set_webhook(event, context):
 
     return ERROR_RESPONSE
 
-def start_handler(bot, update):
-    chat_id = update.message.chat.id
-    bot.send_message(chat_id=chat_id, text="I'm a bot, please talk to me!")
-
-def help_handler(bot, update):
-    help_message = "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
-                HELP_SUMMARY,
-                '\n'.join([concat_command(c, True, '-', escape) for c in GENERAL_COMMANDS]),
-                '\n'.join([concat_command(c, True, '-', escape) for c in CAMPAIGN_COMMANDS]),
-                '\n'.join([concat_command(c, True, '-', escape) for c in CHARACTER_COMMANDS])
-            )
-    bot.send_message(chat_id=update.message.chat_id, text=help_message, parse_mode="Markdown", disable_web_page_preview=True)
-
-def concat_command(command, add_params=False, separator='-', escape=False):
-    cmd = command[0]
-    params = f"{command[1]} " if add_params is True and command[1] is not None else ''
-    desc = command[2]
-    formatted_cmd = f"{cmd} {params}{separator} {desc}"
-    return formatted_cmd if escape is False else escape_md(formatted_cmd)
-
-def escape_md(text):
-    return text.replace('_', '\_')

@@ -32,7 +32,7 @@ class TestCharacter(unittest.TestCase):
         expected = "```\r\nBeelzebub says:```\r\n–What the fuck is wrong with you?\r\n"
 
         self.assertEqual(expected, result)
-    
+
     def test_whisper(self):
         cmd = '/whisper Beelzebub What the fuck is wrong with you?'
         result = chat(cmd, 'whisper')
