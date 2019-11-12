@@ -6,5 +6,9 @@ class NotACommand(Exception):
     """Raised when the message from the chat is not a command"""
     pass
 
+class CampaignNotFound(Exception):
+    """Raised when theres not an active campaign"""
+    pass
+
 class CharacterNotFound(Exception):
     pass
