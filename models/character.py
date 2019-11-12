@@ -10,7 +10,7 @@ class Character:
         self.beyond_url = character['readonlyUrl']
         self.name = character['name']
         self.level = int(character['classes'][0]['level'])
-        self.race = character['race']['fullName']
+        self.race = character['race']['baseName']
         self._class = character['classes'][0]['definition']['name']
         self.str = int(character['stats'][0]['value']) + int(race_data['ability_bonuses'][0])
         self.dex = int(character['stats'][1]['value']) + int(race_data['ability_bonuses'][1])
