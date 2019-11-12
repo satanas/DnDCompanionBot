@@ -213,12 +213,12 @@ def ability_check(chat_id, username, ability):
 def get_linked_character(db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)
     character_id = db.get_character_id(campaign_id, username)
-    char = db.get_character(character_id, find_by_id=True)
+    character = db.get_character(character_id, find_by_id=True)
 
     if character == None:
         raise CharacterNotFound
 
-    return char
+    return character
 
 #if __name__ == "__main__":
 #    db = Database()
