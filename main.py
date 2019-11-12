@@ -3,7 +3,7 @@ import json
 import logging
 import telegram
 
-from commands import command_handler, default_handler, is_command
+from commands import command_handler, default_handler, is_command, parse_command
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
