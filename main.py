@@ -55,7 +55,7 @@ def webhook(event, context):
 
         username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
         command = parse_command(update.message.text)
-        txt_args = update.message.text.split(' ')[1:]
+        txt_args = ' '.join(update.message.text.split(' ')[1:])
 
         try:
             command_handler(command)(bot, update, command, txt_args)
