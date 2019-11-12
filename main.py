@@ -4,6 +4,7 @@ import logging
 import telegram
 
 from commands import command_handler, default_handler, is_command, parse_command
+from exceptions import CommandNotFound, CharacterNotFound
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
