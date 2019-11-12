@@ -84,7 +84,7 @@ class Database:
 
         json_data = result[list(result.keys())[0]]
 
-        race = json_data['race']['fullName'] if find_by_id else json_data['character']['race']['fullName']
+        race = json_data['race']['baseName'] if find_by_id else json_data['character']['race']['baseName']
         race_data = requests.get(RACE_URLS[race]).json()
         return Character(json_data, race_data, find_by_id)
 
