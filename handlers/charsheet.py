@@ -2,7 +2,7 @@ import requests
 
 SHEETS_JSON_URL = "https://gist.githubusercontent.com/satanas/0d38dad2f1eae87143a4cd10206eece5/raw/b4bdf85be78e5e15f3a65c7c7474862a2477dc48/character_dnd.json"
 
-def handler(bot, update):
+def handler(bot, update, command, txt_args):
     username = update.message.text.strip().replace('/charsheet', '').strip()
     if username == '' or username == ' ':
         username = update.message.from_user.username

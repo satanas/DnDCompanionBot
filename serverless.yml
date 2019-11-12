@@ -25,6 +25,7 @@ provider:
   environment:
     TELEGRAM_TOKEN: ${file(./serverless.env.yml):TELEGRAM_TOKEN, ''}
     FIREBASE_API_SECRET: ${file(./serverless.env.yml):FIREBASE_API_SECRET, ''}
+    FIREBASE_DB_URL: ${file(./serverless.env.yml):FIREBASE_DB_URL, ''}
 
 functions:
   webhook:

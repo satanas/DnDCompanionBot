@@ -54,9 +54,9 @@ def help_for_botfather():
 def help_handler(bot, update):
     help_message = "{}\n\n*General commands:*\n{}\n\n*Campaign commands:*\n{}\n\n*Character commands:*\n{}".format(
                 HELP_SUMMARY,
-                '\n'.join([concat_command(c, True, '-', escape) for c in GENERAL_COMMANDS]),
-                '\n'.join([concat_command(c, True, '-', escape) for c in CAMPAIGN_COMMANDS]),
-                '\n'.join([concat_command(c, True, '-', escape) for c in CHARACTER_COMMANDS])
+                '\n'.join([formatting_command(cmd, info, True, '-', escape) for cmd, info in GENERAL_COMMANDS.items()]),
+                '\n'.join([formatting_command(cmd, info, True, '-', escape) for cmd, info in CAMPAIGN_COMMANDS.items()]),
+                '\n'.join([formatting_command(cmd, info, True, '-', escape) for cmd, info in CHARACTER_COMMANDS.items()])
             )
     bot.send_message(chat_id=update.message.chat_id, text=help_message, parse_mode="Markdown", disable_web_page_preview=True)
 

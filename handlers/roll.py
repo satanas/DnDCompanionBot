@@ -4,11 +4,9 @@ import random
 DICE_ROLL_PATTERN = re.compile('(\d+?d\d{1,3}|\d+?d%)([+-])*(\d+)*')
 
 # Method to be invoked by telegram
-def handler(bot, update, **args):
-    print(update)
+def handler(bot, update, command, expression):
     username = f"@{update.message.from_user.username}" if update.message.from_user.username else update.message.from_user.first_name
 
-    expression = update.message.text.strip().replace('/roll ', '')
     try:
         results = roll(expression)
         resp = response(username, results)
@@ -73,5 +71,3 @@ def response(username, results):
 
     return f"{username} rolled:{rolls}"
 
-if __name__ == "__main__":
-    print(response('wil', roll('1d20,1d6')))

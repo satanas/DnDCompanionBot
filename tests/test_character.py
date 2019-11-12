@@ -1,7 +1,7 @@
 import unittest
 
 from unittest.mock import patch, Mock, PropertyMock
-from character import talk, chat,import_character
+from handlers.character import talk, chat,import_character
 
 CHARACTER_JSON = {
     'character': {

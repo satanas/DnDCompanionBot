@@ -1,10 +1,10 @@
-from roll import handler as roll_handler
-from charsheet import handler as charsheet_handler
-from character import handler as character_handler
-from turns import handler as turn_handler
-from dm import handler as dm_handler
-from campaign import handler as campaign_handler
 from exceptions import CommandNotFound, NotACommand
+from handlers.roll import handler as roll_handler
+from handlers.charsheet import handler as charsheet_handler
+from handlers.character import handler as character_handler
+from handlers.turns import handler as turn_handler
+from handlers.dm import handler as dm_handler
+from handlers.campaign import handler as campaign_handler
 
 # Each command should be defined using the expression below:
 #
@@ -39,11 +39,10 @@ CHARACTER_COMMANDS = {
     "/link_char": (character_handler, ["<char_id>", "(username)"], "links character to target username or self username"),
     "/status": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
     "/weapons": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
-    "/attack_roll": (character_handler, ["<character>", "<weapon>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),
+    "/attack_roll": (character_handler, ["<weapon>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),
     "/initiative_roll": (character_handler, ["<character>"], "performs an initiative roll for a character"),
     "/short_rest_roll": (character_handler, ["<username|character>"], "performs an short rest roll for a character"),
-    "/talk": (character_handler, ["<message>"], "prints a message using in-game conversation format"),
-    "/say": (character_handler, ["<message>"], "prints a normal message using in-game conversation format"),
+    "/say": (character_handler, ["<message>"], "prints a message using in-game conversation format"),
     "/whisper": (character_handler, ["<message>"], "prints a whisper message using in-game conversation format"),
     "/yell": (character_handler, ["<message>"], "prints a yell message using in-game conversation format"),
 }

@@ -1,6 +1,6 @@
 import unittest
 
-from roll import roll, process_notation, roll_one, response
+from handlers.roll import roll, process_notation, roll_one, response
 
 class TestRoll(unittest.TestCase):
 

@@ -5,3 +5,6 @@ class CommandNotFound(Exception):
 class NotACommand(Exception):
     """Raised when the message from the chat is not a command"""
     pass
+
+class CharacterNotFound(Exception):
+    pass

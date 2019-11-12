@@ -71,7 +71,7 @@ class Database:
             return None
 
         return result[username]
-        
+
     def get_character(self, character, find_by_id):
         if find_by_id:
             result = self.firebase_db.get('/', f'/characters/{character}', params={'auth': FIREBASE_API_SECRET})
