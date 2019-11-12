@@ -8,32 +8,33 @@ campaigns, character sheets and help the DM with management tasks.
 General commands | Action
 --------|-------
 /start | starts the DnDCompanionBot
-/roll <expression> | rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)
-/charsheet <username> | returns the character sheet associated with username
-/combatsheet | returns the link of the combat cheatsheet
+/roll \<expression\> | rolls the dice using the [dice notation](https://en.wikipedia.org/wiki/Dice_notation)
+/charsheet \<username\> | returns the character sheet associated with username
 /help | shows this help message
 
 Campaign commands | Action
 --------|-------
 /start_campaign | starts a new campaign in the invoked group
 /close_campaign | closes an active campaign
-/set_turns <username1>,...<usernameN> | creates a list with the order of players for a given round
+/set_turns \<username1\>, ..., \<usernameN\> | creates a list with the order of players for a given round
 /turn | shows the current player in the turns list
 /next_turn | moves to the next player in the turns list
-/set_dm <username> | sets the username of the DM for the current campaign
-/import_char <url> | imports the JSON data of a character from a URL
-/link_char <char_id> <username> OR <char_id> | links character to target username or self username
+/set_dm \<username\> | sets the username of the DM for the current campaign
 /dm | shows the DM for the current campaign
 
 Character commands | Action
 --------|-------
-/weapons <character> | shows the list of weapons of a character
-/attack_roll <character> <weapon> melee|range <distance> adv|disadv | performs an attack roll on a character
-/initiative_roll <character> | performs an initiative roll for a character
-/talk <character> <message> | prints a message using in-game conversation format
-/say <character> <message> | prints a normal message using in-game conversation format
-/whisper <character> <message> | prints a whisper message using in-game conversation format
-/yell <character> <message> | prints a yell message using in-game conversation format
+/import_char \<url\> | imports the JSON data of a character from a URL
+/link_char \<char\_id\>, (username) | links character to target username or self username
+/status \<username\|character\> | shows the list of weapons of a character
+/weapons \<username\|character\> | shows the list of weapons of a character
+/attack_roll \<character\>, \<weapon\>, \<melee\|range\>, (distance), (adv\|disadv) | performs an attack roll on a character
+/initiative_roll \<character\> | performs an initiative roll for a character
+/short_rest_roll \<username\|character\> | performs an short rest roll for a character
+/talk \<message\> | prints a message using in-game conversation format
+/say \<message\> | prints a normal message using in-game conversation format
+/whisper \<message\> | prints a whisper message using in-game conversation format
+/yell \<message\> | prints a yell message using in-game conversation format
 
 
 ## What do I need?

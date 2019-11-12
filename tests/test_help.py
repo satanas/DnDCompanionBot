@@ -25,6 +25,6 @@ class TestCommands(unittest.TestCase):
 
         # Test with add_params=True, separator=+ and escape=True
         info = (None, ["<arg1>", "<arg2|arg3>", "(arg4)"], "this is the description")
-        actual_cmd = formatting_command("/foobar", info, add_params=True, separator="+", escape=True)
-        expected_cmd = "/foobar \<arg1\>, \<arg2\|arg3\>, (arg4) + this is the description"
+        actual_cmd = formatting_command("/foobar", info, add_params=True, separator="|", escape=True)
+        expected_cmd = "/foobar \<arg1\>, \<arg2\|arg3\>, (arg4) | this is the description"
         self.assertEqual(expected_cmd, actual_cmd)

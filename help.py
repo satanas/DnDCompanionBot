@@ -62,9 +62,10 @@ def help_handler(bot, update):
 
 def formatting_command(cmd, info, add_params=False, separator='-', escape=False):
     params = ', '.join(info[1]) + ' ' if add_params is True and info[1] is not None else ''
+    params = escape_md(params) if escape is True else params
     desc = info[2]
     formatted_cmd = f"{cmd} {params}{separator} {desc}"
-    return formatted_cmd if escape is False else escape_md(formatted_cmd)
+    return formatted_cmd
 
 def escape_md(text):
     text = text.replace('_', '\_')
