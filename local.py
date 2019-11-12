@@ -3,8 +3,8 @@ import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from main import start_handler, help_handler
-from commands import GENERAL_COMMANDS, CAMPAIGN_COMMANDS, CHARACTER_COMMANDS
+from commands import ALL_COMMANDS, command_handler, default_handler, parse_command
+from exceptions import CommandNotFound, CampaignNotFound, CharacterNotFound
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
@@ -13,6 +13,20 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+def handler(bot, update):
+    command = parse_command(update.message.text)
+    txt_args = ' '.join(update.message.text.split(' ')[1:])
+    command_handler(command)(bot, update, command, txt_args)
+
+    try:
+        command_handler(command)(bot, update, command, txt_args)
+    except CommandNotFound:
+        default_handler(bot, update, f'Command {command} not found')
+    except CharacterNotFound:
+        default_handler(bot, update, f'Character not found. Cannot execute {update.message.text}')
+    except CampaignNotFound:
+        default_handler(bot, update, f'Campaign not found. Theres must be an active campaign')
 
 def unknown(update, context):
     chat_id = context.message.chat.id
@@ -29,20 +43,12 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('start', start_handler))
-    dp.add_handler(CommandHandler('help', help_handler))
+    #dp.add_handler(CommandHandler('start', start_handler))
+    #dp.add_handler(CommandHandler('help', help_handler))
 
-    for command in GENERAL_COMMANDS:
+    for command in ALL_COMMANDS:
         command_key = command
-        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), GENERAL_COMMANDS[command][0]))
-    
-    for command in CAMPAIGN_COMMANDS:
-        command_key = command
-        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), CAMPAIGN_COMMANDS[command][0]))
-    
-    for command in CHARACTER_COMMANDS:
-        command_key = command
-        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), CHARACTER_COMMANDS[command][0]))
+        dp.add_handler(CommandHandler(command_key.replace('/', '').strip(), handler))
 
     dp.add_handler(MessageHandler(Filters.command, unknown))
 
