@@ -51,7 +51,7 @@ def webhook(event, context):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)
 
         if not is_command(update):
-            return ERROR_RESPONSE
+            return OK_RESPONSE
 
         username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
         command = parse_command(update.message.text)
@@ -59,15 +59,12 @@ def webhook(event, context):
 
         try:
             command_handler(command)(bot, update, command, txt_args)
-            return OK_RESPONSE
         except CommandNotFound:
             default_handler(bot, update, f'Command {command} not found')
-            return ERROR_RESPONSE
         except CharacterNotFound:
             default_handler(bot, update, f'Character not found. Cannot execute {update.message.text}')
-            return ERROR_RESPONSE
 
-    return ERROR_RESPONSE
+    return OK_RESPONSE
 
 
 def set_webhook(event, context):
