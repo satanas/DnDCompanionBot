@@ -2,10 +2,13 @@ import sys
 import requests
 from urllib.parse import urlparse
 
+import utils
+
 from handlers.roll import roll
 from database import Database
 from models.character import Character
 from exceptions import CharacterNotFound, CampaignNotFound
+from utils import normalized_username
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
 
@@ -69,7 +72,7 @@ def link_character(args, db, chat_id, username):
 
     character_id = params[0]
     if (len(params) > 1):
-        player = params[1].replace('@', '').strip()
+        player = utils.normalized_username(params[1])
     else:
         player = username
 
@@ -189,6 +192,7 @@ def get_weapons(other_username, db, chat_id, username):
 
 def get_status(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username
+    search_param = utils.normalized_username(search_param)
     character = get_linked_character(db, chat_id, search_param)
 
     return (f'{character.name} | {character.race} {character._class} Level {character.level}\r\n'
@@ -214,7 +218,7 @@ def ability_check(chat_id, username, ability):
 
 def get_linked_character(db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)
-    
+
     if campaign_id is None:
         raise CampaignNotFound
 

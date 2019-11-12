@@ -1,7 +1,10 @@
+import json
 import unittest
 
 from unittest.mock import patch, Mock, PropertyMock
-from handlers.character import talk, import_character, link_character
+
+from models.character import Character
+from handlers.character import talk, import_character, link_character, get_status
 
 CHARACTER_JSON = {
     'character': {
@@ -111,3 +114,47 @@ class TestCharacter(unittest.TestCase):
         db.set_character_link.assert_called_with(campaign_id, 'foobar', '987654321')
         self.assertEqual('Character with id 987654321 linked to foobar successfully!', rtn)
 
+    def test_status_without_params(self):
+        # conditions
+        character_id = 987654321
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+        db.get_character_id = Mock(return_value=(character_id))
+        db.get_character = Mock(return_value=self.__get_character())
+
+        # execution
+        rtn = get_status('', db, chat_id, username)
+
+        # expected
+        db.get_character_id.assert_called_with(campaign_id, 'foo')
+        self.assertEqual('Amarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25', rtn)
+
+    def test_status_with_params(self):
+        # conditions
+        character_id = 987654321
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+        db.get_character_id = Mock(return_value=(character_id))
+        db.get_character = Mock(return_value=self.__get_character())
+
+        # execution
+        rtn = get_status('@foobar', db, chat_id, username)
+
+        # expected
+        db.get_character_id.assert_called_with(campaign_id, 'foobar')
+        self.assertEqual('Amarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25', rtn)
+
+    def __get_character(self):
+        with open('tests/fixtures/character.json', 'r') as jd:
+            json_data = json.loads(jd.read())
+
+        with open('tests/fixtures/race_data.json', 'r') as rd:
+            race_data = json.loads(rd.read())
+
+        return Character(json_data, race_data, False)

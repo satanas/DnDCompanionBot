@@ -1,0 +1,95 @@
+{
+    "_id": "5bce91525b7768e792018385",
+    "ability_bonuses": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+    ],
+    "age": "Humans reach adulthood in their late teens and live less than a century.",
+    "alignment": "Humans tend toward no particular alignment. The best and the worst are found among them.",
+    "index": 4,
+    "language_desc": "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish military phrases, and so on.",
+    "language_options": {
+        "choose": 1,
+        "from": [
+            {
+                "name": "Dwarvish",
+                "url": "http://www.dnd5eapi.co/api/languages/2"
+            },
+            {
+                "name": "Elvish",
+                "url": "http://www.dnd5eapi.co/api/languages/3"
+            },
+            {
+                "name": "Giant",
+                "url": "http://www.dnd5eapi.co/api/languages/4"
+            },
+            {
+                "name": "Gnomish",
+                "url": "http://www.dnd5eapi.co/api/languages/5"
+            },
+            {
+                "name": "Goblin",
+                "url": "http://www.dnd5eapi.co/api/languages/6"
+            },
+            {
+                "name": "Halfling",
+                "url": "http://www.dnd5eapi.co/api/languages/7"
+            },
+            {
+                "name": "Orc",
+                "url": "http://www.dnd5eapi.co/api/languages/8"
+            },
+            {
+                "name": "Abyssal",
+                "url": "http://www.dnd5eapi.co/api/languages/9"
+            },
+            {
+                "name": "Celestial",
+                "url": "http://www.dnd5eapi.co/api/languages/10"
+            },
+            {
+                "name": "Draconic",
+                "url": "http://www.dnd5eapi.co/api/languages/11"
+            },
+            {
+                "name": "Deep Speech",
+                "url": "http://www.dnd5eapi.co/api/languages/12"
+            },
+            {
+                "name": "Infernal",
+                "url": "http://www.dnd5eapi.co/api/languages/13"
+            },
+            {
+                "name": "Primordial",
+                "url": "http://www.dnd5eapi.co/api/languages/14"
+            },
+            {
+                "name": "Sylvan",
+                "url": "http://www.dnd5eapi.co/api/languages/15"
+            },
+            {
+                "name": "Undercommon",
+                "url": "http://www.dnd5eapi.co/api/languages/16"
+            }
+        ],
+        "type": "languages"
+    },
+    "languages": [
+        {
+            "name": "Common",
+            "url": "http://www.dnd5eapi.co/api/languages/1"
+        }
+    ],
+    "name": "Human",
+    "size": "Medium",
+    "size_description": "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.",
+    "speed": 30,
+    "starting_proficiencies": [],
+    "subraces": [],
+    "traits": [],
+    "url": "http://www.dnd5eapi.co/api/races/4"
+}

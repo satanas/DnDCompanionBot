@@ -104,7 +104,7 @@ class Database:
     def set_user_char(self, campaign_id, user_id, char_name):
         return self.firebase_db.patch(f'/campaigns/{campaign_id}',
                                       data={'dm_user_id': user_id, 'dm_username': username},
-                                      params={'auth': FIREBASE_API_SECRET})        
+                                      params={'auth': FIREBASE_API_SECRET})
 
 
 class CampaignActiveException(Exception):
