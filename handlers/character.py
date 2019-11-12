@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from handlers.roll import roll
 from database import Database
 from models.character import Character
-from exceptions import CharacterNotFound
+from exceptions import CharacterNotFound, CampaignNotFound
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
 
@@ -68,12 +68,16 @@ def link_character(args, db, chat_id, username):
     params = [x.strip() for x in args.split(' ')]
 
     character_id = params[0]
-    if len(params) > 1:
-        player = params[1].replace('@', '').strip()
+    if (len(params) > 1):
+        character_id = params[1]
+        player = params[0].replace('@', '').strip()
     else:
         player = username
 
     campaign_id, campaign = db.get_campaign(chat_id)
+    if campaign_id is None:
+        return f'You must be in an active campaign to link characters!'
+
     db.set_character_link(campaign_id, player, character_id)
 
     return f'Character with id {character_id} linked to {player} successfully!'
@@ -212,6 +216,10 @@ def ability_check(chat_id, username, ability):
 
 def get_linked_character(db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)
+    
+    if campaign_id is None:
+        raise CampaignNotFound
+
     character_id = db.get_character_id(campaign_id, username)
     character = db.get_character(character_id, find_by_id=True)
 
