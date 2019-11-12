@@ -57,7 +57,7 @@ def command_handler(command):
         return default_handler
     #elif command == "/start":
     elif command in ALL_COMMANDS:
-        ALL_COMMANDS[command][0]
+        return ALL_COMMANDS[command][0]
     else:
         raise CommandNotFound
 
