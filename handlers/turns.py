@@ -1,16 +1,16 @@
 from database import Database
 
-def handler(bot, update):
+def handler(bot, update, command, txt_args):
     db = Database()
     chat_id = update.message.chat.id
     text = update.message.text
-    if text.startswith('/set_turns'):
+    if command == '/set_turns':
         response = set_turns(chat_id, text, db)
-    elif text.startswith('/turn'):
+    elif command == '/turn':
         response = get_current_turn(chat_id, db)
-    elif text.startswith('/next_turn'):
+    elif command == '/next_turn':
         response = update_turn(chat_id, db, True)
-    elif text.startswith('/prev_turn'):
+    elif command == '/prev_turn':
         response = update_turn(chat_id, db, False)
     else:
         response = "Invalid command"
