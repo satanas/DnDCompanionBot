@@ -4,7 +4,7 @@ import logging
 import telegram
 
 from commands import command_handler, default_handler, is_command, parse_command
-from exceptions import CommandNotFound, CharacterNotFound, CampaignNotFound
+from exceptions import CommandNotFound, CharacterNotFound, CampaignNotFound, InvalidCommand
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -59,7 +59,7 @@ def webhook(event, context):
 
         try:
             command_handler(command)(bot, update, command, txt_args)
-        except CommandNotFound:
+        except (CommandNotFound, InvalidCommand):
             default_handler(bot, update, 'Invalid command')
         except CharacterNotFound:
             default_handler(bot, update, 'Character not found. Cannot execute command')
