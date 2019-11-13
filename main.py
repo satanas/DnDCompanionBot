@@ -60,11 +60,11 @@ def webhook(event, context):
         try:
             command_handler(command)(bot, update, command, txt_args)
         except CommandNotFound:
-            default_handler(bot, update, f'Command {command} not found')
+            default_handler(bot, update, 'Invalid command')
         except CharacterNotFound:
-            default_handler(bot, update, f'Character not found. Cannot execute {update.message.text}')
+            default_handler(bot, update, 'Character not found. Cannot execute command')
         except CampaignNotFound:
-            default_handler(bot, update, f'Campaign not found. There must be an active campaign')
+            default_handler(bot, update, 'Campaign not found. There must be an active campaign')
 
     return OK_RESPONSE
 
