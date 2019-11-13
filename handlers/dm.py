@@ -1,14 +1,14 @@
 from database import Database
 
-def handler(bot, update):
+def handler(bot, update, command, txt_args):
     db = Database()
     chat_id = update.message.chat.id
     text = update.message.text
-    if text.startswith('/set_dm'):
+    if command == '/set_dm':
         user_id = update.message.from_user.id
         username = update.message.from_user.username
         response = set_dm(chat_id, user_id, username, db)
-    elif text.startswith('/dm'):
+    elif command == '/dm':
         response = get_dm(chat_id, db)
     else:
         response = "Invalid command"
