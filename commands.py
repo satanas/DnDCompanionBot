@@ -42,9 +42,10 @@ CHARACTER_COMMANDS = {
     "/attack_roll": (character_handler, ["<weapon>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),
     "/initiative_roll": (character_handler, ["<character>"], "performs an initiative roll for a character"),
     "/short_rest_roll": (character_handler, ["<username|character>"], "performs an short rest roll for a character"),
-    "/say": (character_handler, ["<message>"], "prints a message using in-game conversation format"),
-    "/whisper": (character_handler, ["<message>"], "prints a whisper message using in-game conversation format"),
-    "/yell": (character_handler, ["<message>"], "prints a yell message using in-game conversation format"),
+    "/ability_check": (character_handler, ["<ability>", "(skill)"], "performs an ability check or a skill check if skill is specified"),
+    "/say": (character_handler, ["<character>", "<message>"], "prints a message using in-game conversation format"),
+    "/whisper": (character_handler, ["<character>", "<message>"], "prints a whisper message using in-game conversation format"),
+    "/yell": (character_handler, ["<character>", "<message>"], "prints a yell message using in-game conversation format"),
 }
 
 ALL_COMMANDS = {}
@@ -53,8 +54,9 @@ ALL_COMMANDS.update(CAMPAIGN_COMMANDS)
 ALL_COMMANDS.update(CHARACTER_COMMANDS)
 
 def command_handler(command):
-    if command == "/help":
-        return default_handler
+    if command == "/help" or command == '/start':
+        raise CommandNotFound
+    #    return default_handler
     #elif command == "/start":
     elif command in ALL_COMMANDS:
         return ALL_COMMANDS[command][0]

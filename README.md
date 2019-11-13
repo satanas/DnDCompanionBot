@@ -28,13 +28,13 @@ Character commands | Action
 /link_char \<char\_id\>, (username) | links character to target username or self username
 /status \<username\|character\> | shows the list of weapons of a character
 /weapons \<username\|character\> | shows the list of weapons of a character
-/attack_roll \<character\>, \<weapon\>, \<melee\|range\>, (distance), (adv\|disadv) | performs an attack roll on a character
+/attack_roll \<weapon\>, \<melee\|range\>, (distance), (adv\|disadv) | performs an attack roll on a character
 /initiative_roll \<character\> | performs an initiative roll for a character
 /short_rest_roll \<username\|character\> | performs an short rest roll for a character
-/talk \<message\> | prints a message using in-game conversation format
-/say \<message\> | prints a normal message using in-game conversation format
-/whisper \<message\> | prints a whisper message using in-game conversation format
-/yell \<message\> | prints a yell message using in-game conversation format
+/ability_check \<ability\>, (skill) | performs an ability check or a skill check if skill is specified
+/say \<character\>, \<message\> | prints a message using in-game conversation format
+/whisper \<character\>, \<message\> | prints a whisper message using in-game conversation format
+/yell \<character\>, \<message\> | prints a yell message using in-game conversation format
 
 
 ## What do I need?
@@ -106,3 +106,4 @@ AWS credentials saved on your machine at ~/.aws/credentials.
 ## References
 * https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/README.md
 * https://github.com/treetrnk/rollem-telegram-bot/blob/master/bot.py
+* https://rpg.stackexchange.com/questions/83930/how-do-i-calculate-my-skill-modifier

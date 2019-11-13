@@ -13,8 +13,8 @@ logger = logging.getLogger()
 if logger.handlers:
     for handler in logger.handlers:
         logger.removeHandler(handler)
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                     level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 OK_RESPONSE = {
     'statusCode': 200,
@@ -45,7 +45,7 @@ def webhook(event, context):
     """
 
     bot = configure_telegram()
-    logger.info('Event: {}'.format(event))
+    logger.info(json.loads(event.get('body')))
 
     if event.get('httpMethod') == 'POST' and event.get('body'):
         update = telegram.Update.de_json(json.loads(event.get('body')), bot)

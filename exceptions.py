@@ -11,4 +11,9 @@ class CampaignNotFound(Exception):
     pass
 
 class CharacterNotFound(Exception):
+    """Raised when a character is not defined or doesn't exist in the database"""
+    pass
+
+class InvalidCommand(Exception):
+    """Raised when a command doesn't have a valid structure"""
     pass

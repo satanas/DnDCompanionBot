@@ -6,9 +6,9 @@ import utils
 
 from handlers.roll import roll
 from database import Database
-from models.character import Character
-from exceptions import CharacterNotFound, CampaignNotFound
 from utils import normalized_username
+from models.character import Character, ABILITIES, SKILLS
+from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
 
@@ -46,6 +46,8 @@ def handler(bot, update, command, txt_args):
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
         #bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    elif command == '/ability_check':
+        response = ability_check(txt_args, db, chat_id, username)
 
     bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
@@ -114,7 +116,7 @@ def attack_roll(txt_args, db, chat_id, username):
         return f"You can attack a target beyond the range of your weapon ({weapon_name}, {weapon.long_range}ft)"
 
     prof = " + PRO(0)"
-    if character.has_weapon_proficiency(weapon_name):
+    if character.has_proficiency(weapon_name):
         mods += character.proficiency
         prof = f" + PRO({character.proficiency})"
 
@@ -167,7 +169,7 @@ def initiative_roll(txt_args, db, chat_id, username):
     dice_notation = f'1d20+{character.dex_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'@{username} initiave roll for {character.name} ({dice_notation}): {dice_rolls}'
+    return f'@{username} initiative roll for {character.name} ({dice_notation}): {dice_rolls}'
 
 def short_rest_roll(txt_args, db, chat_id, username):
     character = get_linked_character(db, chat_id, username)
@@ -182,6 +184,7 @@ def short_rest_roll(txt_args, db, chat_id, username):
 
 def get_weapons(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username
+    search_param = utils.normalized_username(search_param)
     character = get_linked_character(db, chat_id, search_param)
 
     if len(character.weapons) > 0:
@@ -213,8 +216,46 @@ def talk(command, txt_args):
 
     return f"```\r\n{character_name} says:\r\n–{message}\r\n```"
 
-def ability_check(chat_id, username, ability):
-    pass
+def ability_check(txt_args, db, chat_id, username):
+    args = txt_args.split(' ')
+    if len(args) == 0:
+        return ('Invalid syntax. Usage:'
+                '\r\n/ability_check <ability> (skill)')
+
+    skill = None
+    ability = args[0].lower()
+    base_notation = '1d20'
+    if len(args) == 2:
+        skill = args[1].lower()
+
+    if ability not in ABILITIES:
+        return ('Invalid ability. Supported options: ' + ', '.join(ABILITIES))
+    if skill is not None and skill not in SKILLS[ability]:
+        return ('Invalid skill. Supported options: ' + ', '.join(SKILLS[ability]))
+
+    character = get_linked_character(db, chat_id, username)
+
+    txt_skill_mod = ''
+    txt_ability_mod = f' + {ability.upper()}({character.mods[ability]})'
+    ability_desc = ability.upper()
+    mods = character.mods[ability]
+    if skill is not None:
+        ability_desc = f'{ability_desc} ({skill.capitalize()})'
+        mods += character.mods[skill]
+        txt_skill_mod = f' + {skill.capitalize()}({character.mods[skill]})'
+
+    txt_formula = f"{base_notation}{txt_ability_mod}{txt_skill_mod}"
+    if mods > 0:
+        dice_notation = f"{base_notation}+{mods}"
+    else:
+        dice_notation = base_notation
+
+    results = roll(dice_notation)
+    dice_rolls = results[list(results.keys())[0]]
+
+    return (f"@{username} ability check for {character.name} with {ability_desc}:"
+            f"\r\nFormula: {txt_formula}"
+            f"\r\n*{dice_notation}*: {dice_rolls}")
 
 def get_linked_character(db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)

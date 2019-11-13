@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
-from handlers.character import talk, import_character, link_character, get_status
+from handlers.character import talk, import_character, link_character, get_status, ability_check
 
 CHARACTER_JSON = {
     'character': {
@@ -149,6 +149,57 @@ class TestCharacter(unittest.TestCase):
         # expected
         db.get_character_id.assert_called_with(campaign_id, 'foobar')
         self.assertEqual('Amarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25', rtn)
+
+    def test_ability_check_with_empty_params(self):
+        # conditions
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+
+        # execution
+        rtn = ability_check('', db, chat_id, username)
+        self.assertEqual('Invalid ability. Supported options: str, dex, int, wis, cha', rtn)
+
+    def test_ability_check_with_ability(self):
+        # conditions
+        character_id = 987654321
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+        db.get_character_id = Mock(return_value=(character_id))
+        db.get_character = Mock(return_value=self.__get_character())
+
+        # execution
+        rtn = ability_check('str', db, chat_id, username)
+        self.assertEqual(True, rtn.find("@foo ability check for Amarok Skullsorrow with STR:\r\nFormula: 1d20 + STR(4)\r\n*1d20+4*") == 0)
+
+    def test_ability_check_with_ability_and_skill(self):
+        # conditions
+        character_id = 987654321
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+        db.get_character_id = Mock(return_value=(character_id))
+        db.get_character = Mock(return_value=self.__get_character())
+
+        # execution
+        rtn = ability_check('wis perception', db, chat_id, username)
+        self.assertEqual(True, rtn.find("@foo ability check for Amarok Skullsorrow with WIS (Perception):\r\nFormula: 1d20 + WIS(1) + Perception(1)\r\n*1d20+2*") == 0)
+
+    def test_ability_check_with_ability_and_invalid_skill(self):
+        # conditions
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+
+        # execution
+        rtn = ability_check('str perception', db, chat_id, username)
+        self.assertEqual('Invalid skill. Supported options: athletics', rtn)
+
 
     def __get_character(self):
         with open('tests/fixtures/character.json', 'r') as jd:
