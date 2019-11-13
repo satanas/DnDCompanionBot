@@ -107,7 +107,10 @@ def attack_roll(txt_args, db, chat_id, username):
     adv_mod = ''
     prof = ''
     base_notation = '1d20'
-    distance = int(distance)
+    try:
+        distance = int(distance)
+    except ValueError:
+        raise InvalidCommand
 
     character = get_linked_character(db, chat_id, username)
     weapon = character.get_weapon(weapon_name)
@@ -189,9 +192,9 @@ def get_weapons(other_username, db, chat_id, username):
 
     if len(character.weapons) > 0:
         weapons = [w.name for w in character.weapons]
-        return f'Weapons in {character_name}\'s inventory: {weapons}'
+        return f'Weapons in {character.name}\'s inventory: {weapons}'
     else:
-        return f'{character_name} does not have any weapon'
+        return f'{character.name} does not have any weapon'
 
 def get_status(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username
