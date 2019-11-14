@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 def handler(bot, update):
     command = parse_command(update.message.text)
     txt_args = ' '.join(update.message.text.split(' ')[1:])
-    command_handler(command)(bot, update, command, txt_args)
 
     try:
         command_handler(command)(bot, update, command, txt_args)
