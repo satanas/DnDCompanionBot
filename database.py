@@ -106,6 +106,10 @@ class Database:
                                       data={'dm_user_id': user_id, 'dm_username': username},
                                       params={'auth': FIREBASE_API_SECRET})
 
+    def set_char_hp(self, character_id, hit_points):
+        return self.firebase_db.patch(f'/characters/{character_id}/character',
+                                      data={'removedHitPoints': int(hit_points)},
+                                      params={'auth': FIREBASE_API_SECRET})
 
 class CampaignActiveException(Exception):
     def __init__(self, message):

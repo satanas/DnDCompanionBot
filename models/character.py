@@ -67,7 +67,8 @@ class Character:
         self.cha_mod = math.floor((self.cha - 10) / 2)
         self.walking_speed = int(character['race']['weightSpeeds']['normal']['walk'])
         self.max_hit_points = int(character['baseHitPoints']) + self.con_mod
-        self.current_hit_points = self.max_hit_points - int(character['removedHitPoints'])
+        self.removed_hit_points = int(character['removedHitPoints'])
+        self.current_hit_points = self.max_hit_points - self.removed_hit_points
         self.hit_dice = int(character['classes'][0]['definition']['hitDice'])
         self.hit_dice_used = int(character['classes'][0]['hitDiceUsed'])
         self.current_experience = int(character['currentXp'])

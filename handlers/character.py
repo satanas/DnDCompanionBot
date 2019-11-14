@@ -45,7 +45,10 @@ def handler(bot, update, command, txt_args):
         response = get_status(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
-        #bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+    elif command == '/damage':
+        response = set_hp(command, txt_args, db, chat_id, username)
+    elif command == '/heal':
+        response = set_hp(command, txt_args, db, chat_id, username)
     elif command == '/ability_check':
         response = ability_check(txt_args, db, chat_id, username)
 
@@ -203,6 +206,40 @@ def get_status(other_username, db, chat_id, username):
 
     return (f'{character.name} | {character.race} {character._class} Level {character.level}\r\n'
             f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}')
+
+def set_hp(command, txt_args, db, chat_id, username):
+    args = txt_args.split(' ')
+    if args[0].isdigit():
+        points = int(args[0])
+    else:
+        return f'Invalid commands parameters, the correct structure is: \r\n {command}  <integer>  <username|character>'
+
+    campaign_id, campaign = db.get_campaign(chat_id)
+    dm_username = campaign.get('dm_username', None)
+    if dm_username != username:
+        return f'Only the Dungeon Master can execute this command'
+
+    if len(args) > 1:
+        user_param = args[1]
+    else:
+        user_param = username
+        
+    user_param = utils.normalized_username(user_param)
+    character = get_linked_character(db, chat_id, user_param)
+
+    if command == '/damage':
+        result = character.removed_hit_points + int(points)
+        if result > character.max_hit_points:
+            result = character.max_hit_points
+    else:
+        result = character.removed_hit_points - int(points)
+        if result < 0:
+            result = 0
+
+    character.current_hit_points = character.max_hit_points - result
+
+    db.set_char_hp(character.id, hit_points=result)
+    return f'{character.name} received {points} pts of {command}. HP: {character.current_hit_points}/{character.max_hit_points}'
 
 def talk(command, txt_args):
     args = txt_args.split(' ')
