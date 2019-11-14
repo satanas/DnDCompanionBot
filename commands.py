@@ -39,6 +39,7 @@ CHARACTER_COMMANDS = {
     "/link_char": (character_handler, ["<char_id>", "(username)"], "links character to target username or self username"),
     "/status": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
     "/weapons": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
+    "/currency": (character_handler, ["<username|character>"], "shows the currency pouch of a character"),
     "/damage": (character_handler, ["<username|character>", "(damage)"], "apply damage to a character"),
     "/heal": (character_handler, ["<username|character>", "(damage)"], "apply heal to a character"),
     "/attack_roll": (character_handler, ["<weapon>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),

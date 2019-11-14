@@ -43,6 +43,8 @@ def handler(bot, update, command, txt_args):
         response = get_weapons(txt_args, db, chat_id, username)
     elif command == '/status':
         response = get_status(txt_args, db, chat_id, username)
+    elif command == '/currency':
+        response = get_currency(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
     elif command == '/damage':
@@ -205,25 +207,33 @@ def get_status(other_username, db, chat_id, username):
     character = get_linked_character(db, chat_id, search_param)
 
     return (f'{character.name} | {character.race} {character._class} Level {character.level}\r\n'
-            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}')
+            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed}')
+
+def get_currency(other_username, db, chat_id, username):
+    search_param = other_username if other_username != '' else username
+    search_param = utils.normalized_username(search_param)
+    character = get_linked_character(db, chat_id, search_param)
+
+    return (f'{character.name} currency pouch: ```\r\n'
+            f'{character.currency["cp"]} CP | '
+            f'{character.currency["sp"]} SP | '
+            f'{character.currency["ep"]} EP | '
+            f'{character.currency["gp"]} GP | '
+            f'{character.currency["pp"]} PP ```')
 
 def set_hp(command, txt_args, db, chat_id, username):
     args = txt_args.split(' ')
     if args[0].isdigit():
-        points = int(args[0])
-    else:
         return f'Invalid commands parameters, the correct structure is: \r\n {command}  <integer>  <username|character>'
+
+    user_param = args[0]
+    points = int(args[1])
 
     campaign_id, campaign = db.get_campaign(chat_id)
     dm_username = campaign.get('dm_username', None)
     if dm_username != username:
         return f'Only the Dungeon Master can execute this command'
 
-    if len(args) > 1:
-        user_param = args[1]
-    else:
-        user_param = username
-        
     user_param = utils.normalized_username(user_param)
     character = get_linked_character(db, chat_id, user_param)
 
@@ -239,7 +249,7 @@ def set_hp(command, txt_args, db, chat_id, username):
     character.current_hit_points = character.max_hit_points - result
 
     db.set_char_hp(character.id, hit_points=result)
-    return f'{character.name} received {points} pts of {command}. HP: {character.current_hit_points}/{character.max_hit_points}'
+    return f'{character.name} received {points} pts of { command.replace("/", "").strip()}. HP: {character.current_hit_points}/{character.max_hit_points}'
 
 def talk(command, txt_args):
     args = txt_args.split(' ')

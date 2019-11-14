@@ -5,6 +5,28 @@ import utils
 from models.armor import Armor
 from models.weapon import Weapon
 
+LEVEL_CHART = [
+    300,
+    900,
+    2700,
+    6500,
+    14000,
+    23000,
+    34000,
+    48000,
+    64000,
+    85000,
+    100000,
+    120000,
+    140000,
+    165000,
+    195000,
+    225000,
+    265000,
+    305000,
+    355000
+]
+
 ABILITIES = [
     'str',
     'dex',
@@ -72,6 +94,7 @@ class Character:
         self.hit_dice = int(character['classes'][0]['definition']['hitDice'])
         self.hit_dice_used = int(character['classes'][0]['hitDiceUsed'])
         self.current_experience = int(character['currentXp'])
+        self.experience_needed = int(LEVEL_CHART[self.level - 1])
         self.initiative = self.dex_mod
         self.weapons = [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
         self.armor = [Armor(x) for x in character['inventory'] if x['definition']['filterType'] == "Armor"]
@@ -80,6 +103,7 @@ class Character:
         self.proficiency = math.floor((self.level + 7) / 4)
 
         self.mods = self.__calculate_modifiers()
+        self.currency = self.__calculate_currency(character['currencies'])
 
 
     def has_proficiency(self, arg):
@@ -110,6 +134,16 @@ class Character:
 
         return mods
 
+    def __calculate_currency(self, currencies):
+        currency = {
+            'cp': int(currencies['cp']),
+            'sp': int(currencies['sp']),
+            'ep': int(currencies['ep']),
+            'gp': int(currencies['gp']),
+            'pp': int(currencies['pp']),
+        }
+
+        return currency
 
     def __str__(self):
         return (f"Character name={self.name}, race={self.race}, str={self.str}({self.str_mod}), dex={self.dex}({self.dex_mod}), "
