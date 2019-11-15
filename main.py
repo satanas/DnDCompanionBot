@@ -14,7 +14,6 @@ logger = logging.getLogger()
 if logger.handlers:
     for handler in logger.handlers:
         logger.removeHandler(handler)
-#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 OK_RESPONSE = {
