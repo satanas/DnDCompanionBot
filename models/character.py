@@ -106,9 +106,10 @@ class Character:
 
             # Load spells from class spells
             for x in character['classSpells']:
-                for y in x['spells']:
-                    if "Damage" in y['definition']['tags']:
-                        self.spells.append(Spell(y))
+                if 'spells' in x:
+                    for y in x['spells']:
+                        if "Damage" in y['definition']['tags']:
+                            self.spells.append(Spell(y))
 
     def has_proficiency(self, arg):
         return True if utils.to_snake_case(arg) in self.proficiencies else False
