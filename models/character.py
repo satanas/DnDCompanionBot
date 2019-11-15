@@ -89,6 +89,7 @@ class Character:
         self.proficiencies = [x['subType'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
         self.size = character['race']['size']
         self.proficiency = math.floor((self.level + 7) / 4)
+        self.spells = []
 
         self.mods = self.__calculate_modifiers()
 
@@ -97,7 +98,12 @@ class Character:
             spellcasting_ability_id = int(character['classes'][0]['definition']['spellCastingAbilityId']) - 1
             self.spellcasting_ability_mod = self.mods[ABILITIES_INDEX[spellcasting_ability_id]] + self.proficiency
             # Load spells from feat
-            self.spells = [Spell(x) for x in character['spells']['feat'] if "Damage" in x['definition']['tags']]
+            if 'spells' in character:
+                if 'feat' in character['spells']:
+                    for x in character['spells']['feat']:
+                        if "Damage" in x['definition']['tags']:
+                            self.spells.append(Spell(x))
+
             # Load spells from class spells
             for x in character['classSpells']:
                 for y in x['spells']:
