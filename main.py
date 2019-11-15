@@ -68,7 +68,7 @@ def webhook(event, context):
         except json.JSONDecodeError:
             default_handler(bot, update, 'Error parsing JSON')
         except Exception:
-            logger.erros(sys.exc_info()[2])
+            logger.error(sys.exc_info()[2])
             default_handler(bot, update, 'Unhandled error. Check server logs for more details')
 
     return OK_RESPONSE
