@@ -66,7 +66,7 @@ def webhook(event, context):
             default_handler(bot, update, 'Character not found. Cannot execute command')
         except CampaignNotFound:
             default_handler(bot, update, 'Campaign not found. There must be an active campaign')
-        except JSONDecodeError:
+        except json.JSONDecodeError:
             default_handler(bot, update, 'Error parsing JSON')
         except Exception:
             logger.erros(sys.exc_info()[2])
