@@ -13,8 +13,9 @@ class Spell:
         self.damages = {
             1: modifier['die']['diceString']
         }
-        for d in modifier['atHigherLevels']['higherLevelDefinitions']:
-            self.damages[d['level']] = d['dice']['diceString']
+        if 'higherLevelDefinitions' in modifier['atHigherLevels']:
+            for d in modifier['atHigherLevels']['higherLevelDefinitions']:
+                self.damages[d['level']] = d['dice']['diceString']
 
         #self.range = int(definition['range'])
 
