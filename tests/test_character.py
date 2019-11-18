@@ -130,7 +130,8 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         db.get_character_id.assert_called_with(campaign_id, 'foo')
-        self.assertEqual('Amarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25', rtn)
+        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
+                        f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
 
     def test_status_with_params(self):
         # conditions
@@ -148,7 +149,8 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         db.get_character_id.assert_called_with(campaign_id, 'foobar')
-        self.assertEqual('Amarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25', rtn)
+        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
+                        f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
 
     def test_ability_check_with_empty_params(self):
         # conditions
