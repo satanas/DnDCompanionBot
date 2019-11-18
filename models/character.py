@@ -109,7 +109,7 @@ class Character:
         self.initiative = self.dex_mod
         self.weapons = [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
         self.armor = [Armor(x) for x in character['inventory'] if x['definition']['filterType'] == "Armor"]
-        self.proficiencies = [x['subType'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
+        self.proficiencies = self.__extract_proficiencies(character)
         self.size = character['race']['size']
         self.proficiency = math.floor((self.level + 7) / 4)
         self.spells = []
@@ -169,6 +169,11 @@ class Character:
                     mods[skill] += self.proficiency
 
         return mods
+
+    def __extract_proficiencies(self, character):
+        proficiencies = [x['subType'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
+        proficiencies += [x['subType'] for x in character['modifiers']['background'] if x['type'] == 'proficiency']
+        return proficiencies
 
     def __calculate_currency(self, currencies):
         currency = {
