@@ -39,11 +39,8 @@ CHARACTER_COMMANDS = {
     "/link_char": (character_handler, ["<char_id>", "(username)"], "links character to target username or self username"),
     "/status": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
     "/weapons": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
-<<<<<<< HEAD
     "/spells": (character_handler, ["<username|character>"], "shows the list of damage spells of a character"),
-=======
     "/currency": (character_handler, ["<username|character>"], "shows the currency pouch of a character"),
->>>>>>> created currency command
     "/damage": (character_handler, ["<username|character>", "(damage)"], "apply damage to a character"),
     "/heal": (character_handler, ["<username|character>", "(damage)"], "apply heal to a character"),
     "/attack_roll": (character_handler, ["<weapon|spell>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),
@@ -53,6 +50,7 @@ CHARACTER_COMMANDS = {
     "/say": (character_handler, ["<character>", "<message>"], "prints a message using in-game conversation format"),
     "/whisper": (character_handler, ["<character>", "<message>"], "prints a whisper message using in-game conversation format"),
     "/yell": (character_handler, ["<character>", "<message>"], "prints a yell message using in-game conversation format"),
+    "/set_currency": (character_handler, ["<username|character>", "<expression>"], "set the currency pouch of a character"),
 }
 
 ALL_COMMANDS = {}
@@ -71,6 +69,7 @@ def command_handler(command):
         raise CommandNotFound
 
 def default_handler(bot, update, message):
+    print(update.message.chat_id, message)
     bot.send_message(chat_id=update.message.chat_id, text=message, parse_mode="Markdown", disable_web_page_preview=True)
 
 def is_command(update):
