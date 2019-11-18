@@ -45,6 +45,8 @@ def handler(bot, update, command, txt_args):
         response = short_rest_roll(txt_args, db, chat_id, username)
     elif command == '/weapons':
         response = get_weapons(txt_args, db, chat_id, username)
+    elif command == '/spells':
+        response = get_spells(txt_args, db, chat_id, username)
     elif command == '/status':
         response = get_status(txt_args, db, chat_id, username)
     elif command == '/set_currency':
@@ -99,7 +101,7 @@ def attack_roll(txt_args, db, chat_id, username):
     args = [a.strip() for a in txt_args.split(' ')]
     if len(args) < 2:
         return ('Invalid syntax. Usage:'
-                '\r\n/attack\\_roll <weapon> <attack>(melee|range) \\[distance] \\[adv|disadv]')
+                '\r\n/attack\\_roll <weapon|spell> <attack>(melee|range) \\[distance] \\[adv|disadv]')
 
     weapon_name = args[0]
     attack_type = args[1]
@@ -123,9 +125,15 @@ def attack_roll(txt_args, db, chat_id, username):
 
     character = get_linked_character(db, chat_id, username)
     weapon = character.get_weapon(weapon_name)
+    if weapon is None:
+        #weapon = character.get_spell(weapon_name)
+        #if weapon is None:
+        return f"{character.name} doesn't have a weapon/spell called {weapon_name}"
 
+    # TODO: Attack with spell
+    # Attack with weapon
     if attack_type in ["ranged", "r"] and distance > weapon.long_range:
-        return f"You can attack a target beyond the range of your weapon ({weapon_name}, {weapon.long_range}ft)"
+        return f"You can't attack a target beyond the range of your weapon ({weapon_name}, {weapon.long_range}ft)"
 
     prof = " + PRO(0)"
     if character.has_proficiency(weapon_name):
@@ -204,6 +212,18 @@ def get_weapons(other_username, db, chat_id, username):
         return f'Weapons in {character.name}\'s inventory: {weapons}'
     else:
         return f'{character.name} does not have any weapon'
+
+def get_spells(other_username, db, chat_id, username):
+    search_param = other_username if other_username != '' else username
+    search_param = utils.normalized_username(search_param)
+    character = get_linked_character(db, chat_id, search_param)
+
+    if len(character.spells) > 0:
+        spells = ', '.join([s.name for s in character.spells])
+        return f'Attack spells for {character.name}: {spells}'
+    else:
+        return f'{character.name} does not have any attack spells'
+
 
 def get_status(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username

@@ -24,4 +24,7 @@ def get_dm(chat_id, db):
     campaign_id, campaign = db.get_campaign(chat_id)
     dm_username = campaign.get('dm_username', None)
     campaign_name = campaign.get('name', None)
-    return f"DM for campaign \"{campaign_name}\" is @{dm_username}"
+    if dm_username is None:
+        return f"Campaign \"{campaign_name}\" doesn't have a DM set"
+    else:
+        return f"DM for campaign \"{campaign_name}\" is @{dm_username}"

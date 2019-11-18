@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
-from handlers.character import talk, import_character, link_character, get_status, ability_check
+from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells
 
 CHARACTER_JSON = {
     'character': {
@@ -201,6 +201,21 @@ class TestCharacter(unittest.TestCase):
         # execution
         rtn = ability_check('str perception', db, chat_id, username)
         self.assertEqual('Invalid skill. Supported options: athletics', rtn)
+
+    def test_get_spells(self):
+        # conditions
+        character_id = 987654321
+        campaign_id = 666
+        chat_id = 123456
+        username = 'foo'
+        db = Mock()
+        db.get_campaign = Mock(return_value=(campaign_id, None))
+        db.get_character_id = Mock(return_value=(character_id))
+        db.get_character = Mock(return_value=self.__get_character())
+
+        # execution
+        rtn = get_spells('', db, chat_id, username)
+        self.assertEqual("Attack spells for Amarok Skullsorrow: thunderclap, create-bonfire, fire-bolt, magic-missile", rtn)
 
 
     def __get_character(self):

@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import logging
 import telegram
@@ -13,7 +14,6 @@ logger = logging.getLogger()
 if logger.handlers:
     for handler in logger.handlers:
         logger.removeHandler(handler)
-#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 OK_RESPONSE = {
@@ -65,6 +65,11 @@ def webhook(event, context):
             default_handler(bot, update, 'Character not found. Cannot execute command')
         except CampaignNotFound:
             default_handler(bot, update, 'Campaign not found. There must be an active campaign')
+        except json.JSONDecodeError:
+            default_handler(bot, update, 'Error parsing JSON')
+        #except Exception:
+        #    logger.error(sys.exc_info()[2])
+        #    default_handler(bot, update, 'Unhandled error. Check server logs for more details')
 
     return OK_RESPONSE
 

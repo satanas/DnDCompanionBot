@@ -4,6 +4,7 @@ import utils
 
 from models.armor import Armor
 from models.weapon import Weapon
+from models.spell import Spell
 
 LEVEL_CHART = [
     300,
@@ -66,9 +67,19 @@ SKILLS = {
     ]
 }
 
+ABILITIES_INDEX = {
+    0: 'str',
+    1: 'dex',
+    2: 'con',
+    3: 'int',
+    4: 'wis',
+    5: 'cha'
+}
+
 class Character:
     def __init__(self, json_data, race_data, by_id):
         character = json_data if by_id else json_data['character']
+
         self.id = character['id']
         self.beyond_url = character['readonlyUrl']
         self.name = character['name']
@@ -101,16 +112,41 @@ class Character:
         self.proficiencies = [x['subType'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
         self.size = character['race']['size']
         self.proficiency = math.floor((self.level + 7) / 4)
+        self.spells = []
 
         self.mods = self.__calculate_modifiers()
         self.currency = self.__calculate_currency(character['currencies'])
 
+        # Define spellcasting stuff
+        if character['classes'][0]['definition']['canCastSpells'] is True:
+            spellcasting_ability_id = int(character['classes'][0]['definition']['spellCastingAbilityId']) - 1
+            self.spellcasting_ability_mod = self.mods[ABILITIES_INDEX[spellcasting_ability_id]] + self.proficiency
+            # Load spells from feat
+            if 'spells' in character:
+                if 'feat' in character['spells']:
+                    for x in character['spells']['feat']:
+                        if "Damage" in x['definition']['tags']:
+                            self.spells.append(Spell(x))
+
+            # Load spells from class spells
+            for x in character['classSpells']:
+                if 'spells' in x:
+                    for y in x['spells']:
+                        if "Damage" in y['definition']['tags']:
+                            self.spells.append(Spell(y))
 
     def has_proficiency(self, arg):
         return True if utils.to_snake_case(arg) in self.proficiencies else False
 
     def get_weapon(self, weapon_name):
         result = [w for w in self.weapons if w.name == weapon_name]
+        if len(result) > 0:
+            return result[0]
+        else:
+            return None
+
+    def get_spell(self, spell_name):
+        result = [s for s in self.spells if s.name == spell_name]
         if len(result) > 0:
             return result[0]
         else:
