@@ -188,7 +188,7 @@ class TestCharacter(unittest.TestCase):
 
         # execution
         rtn = ability_check('wis perception', db, chat_id, username)
-        self.assertEqual(True, rtn.find("@foo ability check for Amarok Skullsorrow with WIS (Perception):\r\nFormula: 1d20 + WIS(1) + Perception(1)\r\n*1d20+2*") == 0)
+        self.assertEqual(True, rtn.find("@foo ability check for Amarok Skullsorrow with WIS (Perception):\r\nFormula: 1d20 + WIS(1) + Perception(3)\r\n*1d20+4*") == 0)
 
     def test_ability_check_with_ability_and_invalid_skill(self):
         # conditions
