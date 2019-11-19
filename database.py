@@ -52,6 +52,27 @@ class Database:
                                       data={'active': False},
                                       params={'auth': FIREBASE_API_SECRET})
 
+    def start_battle(self, campaign_id, battle_field):
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}',
+                              data={'battle_field': battle_field},
+                              params={'auth': FIREBASE_API_SECRET})
+
+    def set_battle_positions(self, campaign_id, positions):
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}/battle_field',
+                              data={'positions': positions},
+                              params={'auth': FIREBASE_API_SECRET})
+
+    def set_char_position(self, campaign_id, character, position):
+        result = self.firebase_db.get('/', f'/campaigns/{campaign_id}/battle_field/positions', 
+                              params={'orderBy': '\"$key\"', 'equalTo': '\"'+character+'\"', 'auth': FIREBASE_API_SECRET})
+
+        if not result:
+            return None
+
+        return self.firebase_db.patch(f'/campaigns/{campaign_id}/battle_field/positions',
+                              data={character: position},
+                              params={'auth': FIREBASE_API_SECRET})
+
     def set_turn_index(self, campaign_id, turn_index):
         return self.firebase_db.patch(f'/campaigns/{campaign_id}',
                                       data={'turn_index': turn_index},

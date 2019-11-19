@@ -17,3 +17,7 @@ class CharacterNotFound(Exception):
 class InvalidCommand(Exception):
     """Raised when a command doesn't have a valid structure"""
     pass
+
+class NotADM(Exception):
+    """Raised when a dm only command is triggered by a regular user"""
+    pass

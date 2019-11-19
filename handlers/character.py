@@ -1,16 +1,17 @@
 import sys
 import requests
+import string
+
 from urllib.parse import urlparse
 
 import re
 import utils
-
 from handlers.roll import roll
 from database import Database
 from utils import normalized_username
 from currency import optimal_exchange
 from models.character import Character, ABILITIES, SKILLS
-from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand
+from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand, NotADM
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
 
@@ -53,6 +54,8 @@ def handler(bot, update, command, txt_args):
         response = set_currency(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
+    elif command == '/move':
+        response = move(txt_args, db, chat_id, username)
     elif command == '/damage':
         response = set_hp(command, txt_args, db, chat_id, username)
     elif command == '/heal':
@@ -224,7 +227,6 @@ def get_spells(other_username, db, chat_id, username):
     else:
         return f'{character.name} does not have any attack spells'
 
-
 def get_status(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username
     search_param = utils.normalized_username(search_param)
@@ -280,7 +282,7 @@ def set_hp(command, txt_args, db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)
     dm_username = campaign.get('dm_username', None)
     if dm_username != username:
-        return f'Only the Dungeon Master can execute this command'
+        raise NotADM
 
     user_param = utils.normalized_username(user_param)
     character = get_linked_character(db, chat_id, user_param)
@@ -313,6 +315,33 @@ def talk(command, txt_args):
         message = f"__{message}__"
 
     return f"```\r\n{character_name} says:\r\n–{message}\r\n```"
+
+def move(txt_args, db, chat_id, username):
+    args = txt_args.split(' ')
+    campaign_id, campaign = db.get_campaign(chat_id)
+    dm_username = campaign.get('dm_username', None)
+    
+    turns = campaign.get('turns', None)
+    turn_index = int(campaign.get('turn_index', '0'))
+    current_turn = turns[turn_index % len(turns)]
+
+    if len(args) > 1:
+        user_param = utils.normalized_username(args[0])
+        position = args[1]
+        if dm_username != username:
+            return f"Only the Dungeon Master can move other characters"
+    else:
+        user_param = username
+        position = args[0]
+        if utils.normalized_username(current_turn) != username:
+            return f"Is the turn of {current_turn}. You can move only on your turn"
+
+    result = db.set_char_position(campaign_id, user_param, position)
+    
+    if result is None:
+        return f"{user_param} does not exist on this battle field"
+
+    return f"{user_param} moved to {position} successfully!"
 
 def ability_check(txt_args, db, chat_id, username):
     args = txt_args.split(' ')

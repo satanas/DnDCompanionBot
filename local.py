@@ -4,7 +4,7 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from commands import ALL_COMMANDS, command_handler, default_handler, parse_command
-from exceptions import CommandNotFound, CampaignNotFound, CharacterNotFound
+from exceptions import CommandNotFound, InvalidCommand, CampaignNotFound, CharacterNotFound, NotADM
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
@@ -20,12 +20,14 @@ def handler(bot, update):
 
     try:
         command_handler(command)(bot, update, command, txt_args)
-    except CommandNotFound:
-        default_handler(bot, update, f'Command {command} not found')
+    except (CommandNotFound, InvalidCommand):
+        default_handler(bot, update, 'Invalid command')
     except CharacterNotFound:
-        default_handler(bot, update, f'Character not found. Cannot execute {update.message.text}')
+        default_handler(bot, update, 'Character not found. Cannot execute command')
     except CampaignNotFound:
         default_handler(bot, update, f'Campaign not found. Theres must be an active campaign')
+    except NotADM:
+        default_handler(bot, update, f'Only the Dungeon Master can execute {command} command')
 
 def unknown(update, context):
     chat_id = context.message.chat.id

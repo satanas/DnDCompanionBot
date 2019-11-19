@@ -32,6 +32,8 @@ CAMPAIGN_COMMANDS = {
     "/next_turn": (turn_handler,  None, "moves to the next player in the turns list"),
     "/set_dm": (dm_handler, ["<username>"], "sets the username of the DM for the current campaign"),
     "/dm": (dm_handler, None, "shows the DM for the current campaign"),
+    "/start_battle": (campaign_handler, ["<width>", "<height>"], "generates a new battle field"),
+    "/set_positions": (campaign_handler, ["<expression>"], "set characters positions at the battle field"),
 }
 
 CHARACTER_COMMANDS = {
@@ -50,6 +52,7 @@ CHARACTER_COMMANDS = {
     "/say": (character_handler, ["<character>", "<message>"], "prints a message using in-game conversation format"),
     "/whisper": (character_handler, ["<character>", "<message>"], "prints a whisper message using in-game conversation format"),
     "/yell": (character_handler, ["<character>", "<message>"], "prints a yell message using in-game conversation format"),
+    "/move": (character_handler, ["<character for dm>"], "moves your character on the battle field"),
     "/set_currency": (character_handler, ["<username|character>", "<expression>"], "set the currency pouch of a character"),
 }
 
