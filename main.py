@@ -67,6 +67,8 @@ def webhook(event, context):
             default_handler(bot, update, 'Campaign not found. There must be an active campaign')
         except json.JSONDecodeError:
             default_handler(bot, update, 'Error parsing JSON')
+        except NotADM:
+            default_handler(bot, update, f'Only the Dungeon Master can execute {command} command')
         #except Exception:
         #    logger.error(sys.exc_info()[2])
         #    default_handler(bot, update, 'Unhandled error. Check server logs for more details')
