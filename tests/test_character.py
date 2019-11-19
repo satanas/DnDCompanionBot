@@ -4,7 +4,8 @@ import unittest
 from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
-from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells
+from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells, \
+                               initiative_roll, short_rest_roll, get_weapons
 
 CHARACTER_JSON = {
     'character': {
@@ -106,6 +107,21 @@ class TestCharacter(unittest.TestCase):
         self.db.set_character_link.assert_called_with(self.campaign_id, 'foobar', '987654321')
         self.assertEqual('Character with id 987654321 linked to foobar successfully!', rtn)
 
+    def test_initiative_roll(self):
+        # execution
+        rtn = initiative_roll('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual(True, rtn.find("@foo initiative roll for Amarok Skullsorrow:\r\nFormula: 1d20 + DEX(1)\r\n*1d20+1*") == 0)
+
+    def test_short_rest_roll(self):
+        # execution
+        rtn = short_rest_roll('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual(True, rtn.find("@foo short rest roll for Amarok Skullsorrow:\r\nFormula: 1d6 + CON(0)\r\n*1d6+0*") == 0)
+
+
     def test_status_without_params(self):
         # execution
         rtn = get_status('', self.db, self.chat_id, self.username)
@@ -158,6 +174,36 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.assertEqual("Attack spells for Amarok Skullsorrow: thunderclap, create-bonfire, fire-bolt, magic-missile", rtn)
+
+    def test_get_weapons_without_username(self):
+        # execution
+        rtn = get_weapons('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: ['Dagger', 'Dagger', 'Quarterstaff', 'Crossbow, Light', 'Dart', 'Sling']", rtn)
+
+    def test_get_weapons_with_username(self):
+        # execution
+        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: ['Dagger', 'Dagger', 'Quarterstaff', 'Crossbow, Light', 'Dart', 'Sling']", rtn)
+
+    def test_get_weapons_with_no_weapons(self):
+        # conditions
+        character = self.__get_character()
+        character.weapons = []
+        self.db.get_character = Mock(return_value=character)
+
+        # execution
+        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
+        self.assertEqual(f"Amarok Skullsorrow does not have any weapon", rtn)
+
 
 
     def __get_character(self):

@@ -56,9 +56,7 @@ def handler(bot, update, command, txt_args):
         response = talk(command, txt_args)
     elif command == '/move':
         response = move(txt_args, db, chat_id, username)
-    elif command == '/damage':
-        response = set_hp(command, txt_args, db, chat_id, username)
-    elif command == '/heal':
+    elif command == '/damage' or command == '/heal':
         response = set_hp(command, txt_args, db, chat_id, username)
     elif command == '/ability_check':
         response = ability_check(txt_args, db, chat_id, username)
@@ -192,7 +190,9 @@ def initiative_roll(txt_args, db, chat_id, username):
     dice_notation = f'1d20+{character.dex_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'@{username} initiative roll for {character.name} ({dice_notation}): {dice_rolls}'
+    return (f'@{username} initiative roll for {character.name}:'
+            f'\r\nFormula: 1d20 + DEX({character.dex_mod})'
+            f'\r\n*{dice_notation}*: {dice_rolls}')
 
 def short_rest_roll(txt_args, db, chat_id, username):
     character = get_linked_character(db, chat_id, username)
@@ -203,7 +203,9 @@ def short_rest_roll(txt_args, db, chat_id, username):
     dice_notation = f'1d{character.hit_dice}+{character.con_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'@{username} short rest roll for {character.name} ({dice_notation}): {dice_rolls}'
+    return (f'@{username} short rest roll for {character.name}:'
+            f'\r\nFormula: 1d{character.hit_dice} + CON({character.con_mod})'
+            f'\r\n*{dice_notation}*: {dice_rolls}')
 
 def get_weapons(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username

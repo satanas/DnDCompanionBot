@@ -72,7 +72,6 @@ def command_handler(command):
         raise CommandNotFound
 
 def default_handler(bot, update, message):
-    print(update.message.chat_id, message)
     bot.send_message(chat_id=update.message.chat_id, text=message, parse_mode="Markdown", disable_web_page_preview=True)
 
 def is_command(update):
