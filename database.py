@@ -132,6 +132,11 @@ class Database:
                                       data={'removedHitPoints': int(hit_points)},
                                       params={'auth': FIREBASE_API_SECRET})
 
+    def set_char_currency(self, character_id, currencies):
+        return self.firebase_db.patch(f'/characters/{character_id}/character',
+                                      data={'currencies': currencies},
+                                      params={'auth': FIREBASE_API_SECRET})
+
 class CampaignActiveException(Exception):
     def __init__(self, message):
         super().__init__(message)
