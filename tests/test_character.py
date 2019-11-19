@@ -181,7 +181,7 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
-        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: ['Dagger', 'Dagger', 'Quarterstaff', 'Crossbow, Light', 'Dart', 'Sling']", rtn)
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
 
     def test_get_weapons_with_username(self):
         # execution
@@ -189,7 +189,7 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
-        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: ['Dagger', 'Dagger', 'Quarterstaff', 'Crossbow, Light', 'Dart', 'Sling']", rtn)
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
 
     def test_get_weapons_with_no_weapons(self):
         # conditions

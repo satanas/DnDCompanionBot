@@ -107,7 +107,7 @@ class Character:
         self.current_experience = int(character['currentXp'])
         self.experience_needed = int(LEVEL_CHART[self.level - 1])
         self.initiative = self.dex_mod
-        self.weapons = [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
+        self.weapons = self.__extract_weapons(character)
         self.armor = [Armor(x) for x in character['inventory'] if x['definition']['filterType'] == "Armor"]
         self.proficiencies = self.__extract_proficiencies(character)
         self.size = character['race']['size']
@@ -174,6 +174,9 @@ class Character:
         proficiencies = [x['subType'] for x in character['modifiers']['class'] if x['type'] == 'proficiency']
         proficiencies += [x['subType'] for x in character['modifiers']['background'] if x['type'] == 'proficiency']
         return proficiencies
+
+    def __extract_weapons(self, character):
+        return [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
 
     def __calculate_currency(self, currencies):
         currency = {

@@ -213,7 +213,7 @@ def get_weapons(other_username, db, chat_id, username):
     character = get_linked_character(db, chat_id, search_param)
 
     if len(character.weapons) > 0:
-        weapons = [w.name for w in character.weapons]
+        weapons = ', '.join([w.name for w in character.weapons])
         return f'Weapons in {character.name}\'s inventory: {weapons}'
     else:
         return f'{character.name} does not have any weapon'
