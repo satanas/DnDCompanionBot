@@ -8,6 +8,7 @@ class Campaign:
         self.turns = []
         self.dm_user_id = 0
         self.dm_username = None
+        self.battle_field = {}
 
     def to_json(self):
         return {
@@ -18,5 +19,6 @@ class Campaign:
             'dm_user_id': int(self.dm_user_id),
             'dm_username': self.dm_username,
             'turn_index': int(self.turn_index),
-            'turns': self.turns
+            'turns': self.turns,
+            'battle_field': self.battle_field
         }

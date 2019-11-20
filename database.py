@@ -62,6 +62,10 @@ class Database:
                               data={'positions': positions},
                               params={'auth': FIREBASE_API_SECRET})
 
+    def get_battle_field(self, campaign_id):
+        return self.firebase_db.get(f'/campaigns/{campaign_id}/battle_field',
+                              params={'auth': FIREBASE_API_SECRET})
+
     def set_char_position(self, campaign_id, character, position):
         result = self.firebase_db.get('/', f'/campaigns/{campaign_id}/battle_field/positions', 
                               params={'orderBy': '\"$key\"', 'equalTo': '\"'+character+'\"', 'auth': FIREBASE_API_SECRET})

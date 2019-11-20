@@ -24,3 +24,4 @@ serverless.env.yml
 
 # Others
 *.pyc
+battle_field.png

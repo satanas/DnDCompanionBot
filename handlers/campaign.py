@@ -1,5 +1,10 @@
+import os
+import string
+import utils
+
 from database import Database
 from exceptions import CampaignNotFound, NotADM
+from PIL import Image, ImageDraw, ImageFont
 
 def handler(bot, update, command, txt_args):
     db = Database()
@@ -15,8 +20,13 @@ def handler(bot, update, command, txt_args):
         response = start_battle(chat_id, txt_args, db, username)
     elif command == '/set_positions':
         response = set_battle_positions(chat_id, txt_args, db, username)
+    elif command == '/map':
+        response = render_map(chat_id, db)
 
-    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    if command == '/map':
+        bot.send_photo(chat_id=chat_id, photo=open(response, 'rb'))
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def start_campaign(chat_id, text, db):
     campaign_id, campaign = db.get_campaign(chat_id)
@@ -75,11 +85,73 @@ def set_battle_positions(chat_id, txt_args, db, username):
     for position in args:
         position = position.split(' ')
         position = list(filter(None, position))
-        positions[position[0]] = position[1]
+        positions[utils.normalized_username(position[0])] = position[1]
 
     db.set_battle_positions(campaign_id, positions)
 
     return "Positions setted successfully!"
+
+def render_map(chat_id, db):
+    campaign_id, campaign = db.get_campaign(chat_id)
+    battle_field = campaign.get('battle_field', None)
+
+    positions = battle_field.get('positions', None)
+
+    coords = {}
+    for character in positions:
+        pos = positions[character]
+        x = pos[0]
+        y = pos[1:len(pos)]
+        if y not in coords:
+            coords[int(y)] = {}
+            coords[int(y)][string.ascii_uppercase.index(x)] = character
+        else:
+            coords[int(y)][string.ascii_uppercase.index(x)] = character
+
+    bf_map = ''
+    letters = string.ascii_uppercase
+    for y in range(battle_field['heigth'] + 4):
+        for x in range(battle_field['width'] + 1):
+            if y == 0 or y == 2 or y == (battle_field['heigth'] + 3):
+                if x == 0:
+                    bf_map += '+----+'
+                else:
+                    bf_map += '----+\n' if x == battle_field['width'] else '----+'
+            elif y == 1:
+                if x > 9:
+                    bf_map += f' {x} |\n' if x == battle_field['width'] else f' {x} |'
+                elif x == 0:
+                    bf_map += '|    |'
+                else:
+                    bf_map += f'  {letters[x-1]} |\n' if x == battle_field['width'] else f'  {letters[x-1]} |'
+            elif x == 0 and y > 2 and y < (battle_field['heigth'] + 3):
+                if (y-3) > 9:
+                    bf_map += f'| {y-3} |'
+                else:
+                    bf_map += f'|  {y-3} |'
+            else:
+                char = '--'
+                if y in coords:
+                    if x in coords[y]:
+                        char = coords[y][x]
+                        char = char[0:2]
+
+                bf_map += f' {char} |'
+
+                if x == battle_field['width']:
+                    bf_map += '\n'
+
+    filename = "battle_field.png"
+
+    fnt = ImageFont.truetype('./fonts/SourceCodePro-Regular.ttf', 11)
+
+    image = Image.new(mode = "RGB", size = (battle_field['width']*42,battle_field['heigth']*19), color = (0,0,0))
+    d = ImageDraw.Draw(image)
+    d.text((10,10), bf_map, font=fnt, fill=(255,255,255))
+
+    image.save(filename)
+
+    return filename
 
 if __name__ == "__main__":
     db = Database()
