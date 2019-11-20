@@ -1,6 +1,5 @@
 import sys
 import requests
-import string
 
 from urllib.parse import urlparse
 

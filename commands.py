@@ -34,6 +34,7 @@ CAMPAIGN_COMMANDS = {
     "/dm": (dm_handler, None, "shows the DM for the current campaign"),
     "/start_battle": (campaign_handler, ["<width>", "<height>"], "generates a new battle field"),
     "/set_positions": (campaign_handler, ["<expression>"], "set characters positions at the battle field"),
+    "/map": (campaign_handler, None, "set characters positions at the battle field"),
 }
 
 CHARACTER_COMMANDS = {
