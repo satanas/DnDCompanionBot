@@ -4,6 +4,7 @@ import utils
 
 from database import Database
 from exceptions import CampaignNotFound, NotADM
+
 from PIL import Image, ImageDraw, ImageFont
 
 def handler(bot, update, command, txt_args):
@@ -86,6 +87,7 @@ def set_battle_positions(chat_id, txt_args, db, username):
         position = position.split(' ')
         position = list(filter(None, position))
         positions[utils.normalized_username(position[0])] = position[1]
+        positions[position[0]] = position[1]
 
     db.set_battle_positions(campaign_id, positions)
 

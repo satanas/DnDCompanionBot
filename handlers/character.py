@@ -3,10 +3,12 @@ import requests
 
 from urllib.parse import urlparse
 
+import re
 import utils
 from handlers.roll import roll
 from database import Database
 from utils import normalized_username
+from currency import optimal_exchange
 from models.character import Character, ABILITIES, SKILLS
 from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand, NotADM
 
@@ -23,6 +25,8 @@ SIZE_MODIFIER = {
     'Fine': 8,
     'Medium': 0
 }
+
+CURRENCY_PATTERN = re.compile('([-]?\d+)(cp|sp|ep|gp|pp)*(\d+)*')
 
 def handler(bot, update, command, txt_args):
     db = Database()
@@ -45,13 +49,13 @@ def handler(bot, update, command, txt_args):
         response = get_spells(txt_args, db, chat_id, username)
     elif command == '/status':
         response = get_status(txt_args, db, chat_id, username)
+    elif command == '/set_currency':
+        response = set_currency(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
     elif command == '/move':
         response = move(txt_args, db, chat_id, username)
-    elif command == '/damage':
-        response = set_hp(command, txt_args, db, chat_id, username)
-    elif command == '/heal':
+    elif command == '/damage' or command == '/heal':
         response = set_hp(command, txt_args, db, chat_id, username)
     elif command == '/ability_check':
         response = ability_check(txt_args, db, chat_id, username)
@@ -185,7 +189,9 @@ def initiative_roll(txt_args, db, chat_id, username):
     dice_notation = f'1d20+{character.dex_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'@{username} initiative roll for {character.name} ({dice_notation}): {dice_rolls}'
+    return (f'@{username} initiative roll for {character.name}:'
+            f'\r\nFormula: 1d20 + DEX({character.dex_mod})'
+            f'\r\n*{dice_notation}*: {dice_rolls}')
 
 def short_rest_roll(txt_args, db, chat_id, username):
     character = get_linked_character(db, chat_id, username)
@@ -196,7 +202,9 @@ def short_rest_roll(txt_args, db, chat_id, username):
     dice_notation = f'1d{character.hit_dice}+{character.con_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
-    return f'@{username} short rest roll for {character.name} ({dice_notation}): {dice_rolls}'
+    return (f'@{username} short rest roll for {character.name}:'
+            f'\r\nFormula: 1d{character.hit_dice} + CON({character.con_mod})'
+            f'\r\n*{dice_notation}*: {dice_rolls}')
 
 def get_weapons(other_username, db, chat_id, username):
     search_param = other_username if other_username != '' else username
@@ -204,7 +212,7 @@ def get_weapons(other_username, db, chat_id, username):
     character = get_linked_character(db, chat_id, search_param)
 
     if len(character.weapons) > 0:
-        weapons = [w.name for w in character.weapons]
+        weapons = ', '.join([w.name for w in character.weapons])
         return f'Weapons in {character.name}\'s inventory: {weapons}'
     else:
         return f'{character.name} does not have any weapon'
@@ -225,26 +233,58 @@ def get_status(other_username, db, chat_id, username):
     search_param = utils.normalized_username(search_param)
     character = get_linked_character(db, chat_id, search_param)
 
-    return (f'{character.name} | {character.race} {character._class} Level {character.level}\r\n'
-            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}')
+    return (f'```\r\n{character.name} | {character.race} {character._class} Level {character.level}\r\n'
+            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed} \r\n'
+            f'{character.currency["cp"]} CP | '
+            f'{character.currency["sp"]} SP | '
+            f'{character.currency["ep"]} EP | '
+            f'{character.currency["gp"]} GP | '
+            f'{character.currency["pp"]} PP ```')
+
+def set_currency(txt_args, db, chat_id, username):
+    campaign_id, campaign = db.get_campaign(chat_id)
+    dm_username = campaign.get('dm_username', None)
+    if dm_username != username:
+        return f'Only the Dungeon Master can execute this command'
+
+    args = txt_args.split(' ')
+
+    user_param = args[0]
+    user_param = utils.normalized_username(user_param)
+    character = get_linked_character(db, chat_id, user_param)
+
+    equation = CURRENCY_PATTERN.findall(txt_args)
+
+    if len(equation) <= 0:
+        raise Exception('your request was not a valid equation! Please use the currency notation (for example: 10gp, -20cp)')
+
+    currencies = character.currency
+
+    for i in range(0, len(equation)):
+        parts = equation[i]
+        currencies[parts[1]] += int(parts[0])
+        if currencies[parts[1]] < 0:
+            return f"You can't afford that ammount"
+
+    db.set_char_currency(character.id, currencies)
+
+    return (f'{character.name} currencies pouch has been updated: ```\r\n'
+            f'{currencies["cp"]} CP | {currencies["sp"]} SP | '
+            f'{currencies["ep"]} EP | {currencies["gp"]} GP | {currencies["pp"]} PP ```')
 
 def set_hp(command, txt_args, db, chat_id, username):
     args = txt_args.split(' ')
     if args[0].isdigit():
-        points = int(args[0])
-    else:
         return f'Invalid commands parameters, the correct structure is: \r\n {command}  <integer>  <username|character>'
+
+    user_param = args[0]
+    points = int(args[1])
 
     campaign_id, campaign = db.get_campaign(chat_id)
     dm_username = campaign.get('dm_username', None)
     if dm_username != username:
         raise NotADM
 
-    if len(args) > 1:
-        user_param = args[1]
-    else:
-        user_param = username
-        
     user_param = utils.normalized_username(user_param)
     character = get_linked_character(db, chat_id, user_param)
 
@@ -260,7 +300,7 @@ def set_hp(command, txt_args, db, chat_id, username):
     character.current_hit_points = character.max_hit_points - result
 
     db.set_char_hp(character.id, hit_points=result)
-    return f'{character.name} received {points} pts of {command}. HP: {character.current_hit_points}/{character.max_hit_points}'
+    return f'{character.name} received {points} pts of { command.replace("/", "").strip()}. HP: {character.current_hit_points}/{character.max_hit_points}'
 
 def talk(command, txt_args):
     args = txt_args.split(' ')

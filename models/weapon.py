@@ -1,7 +1,9 @@
+import utils
+
 class Weapon:
     def __init__(self, json_data):
         definition = json_data['definition']
-        self.name = definition['name']
+        self.name = utils.to_snake_case(definition['name']).split(',')[0].strip()
         self.type = definition['filterType']
         self.damage = definition['damage']['diceString']
         self.damage_type = definition['damageType']
