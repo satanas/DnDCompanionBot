@@ -37,8 +37,10 @@ def get_campaign(func):
         campaign_id, campaign = db.get_campaign(chat_id)
         if campaign_id is None:
             raise CampaignNotFound
+        kargs['campaign'] = campaign
+        kargs['campaign_id'] = campaign_id
             #return f'You must be in an active campaign to run {command}'
-        return func(command, txt_args, db, chat_id, username, campaign=campaign, campaign_id=campaign_id)
+        return func(command, txt_args, db, chat_id, username, kargs)
     return fetch
 
 #def get_linked_character(db, chat_id, username):
