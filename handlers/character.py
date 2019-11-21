@@ -28,6 +28,41 @@ SIZE_MODIFIER = {
 
 CURRENCY_PATTERN = re.compile('([-]?\d+)(cp|sp|ep|gp|pp)*(\d+)*')
 
+# ==============================
+# Decorators
+# ==============================
+
+def get_campaign(func):
+    def fetch(command, txt_args, db, chat_id, username, **kargs):
+        campaign_id, campaign = db.get_campaign(chat_id)
+        if campaign_id is None:
+            raise CampaignNotFound
+            #return f'You must be in an active campaign to run {command}'
+        return func(command, txt_args, db, chat_id, username, campaign=campaign, campaign_id=campaign_id)
+    return fetch
+
+#def get_linked_character(db, chat_id, username):
+def get_linked_character(func):
+    def wrapper(command, txt_args, db, chat_id, username, **kargs):
+        kargs['character_id'] = db.get_character_id(kargs.get('campaign_id'), username)
+        kargs['character'] = db.get_character(kargs['character_id'], find_by_id=True)
+
+        if kargs['character'] == None:
+            raise CharacterNotFound
+
+        return func(command, txt_args, db, chat_id, username, kargs)
+    return wrapper
+
+def only_dm(func):
+    def validation(command, txt_args, db, chat_id, username, **kargs):
+        dm_username = kargs['campaign'].get('dm_username', None)
+        if dm_username != username:
+            raise NotADM
+        return func(command, txt_args, db, chat_id, username, kargs)
+    return validation
+
+# ==============================
+
 def handler(bot, update, command, txt_args):
     db = Database()
     chat_id = update.message.chat.id
@@ -36,7 +71,7 @@ def handler(bot, update, command, txt_args):
     if command == '/import_char':
         response = import_character(txt_args, db, requests.get)
     if command == '/link_char':
-        response = link_character(txt_args, db, chat_id, username)
+        response = link_character(command, txt_args, db, chat_id, username)
     elif command == '/attack_roll':
         response = attack_roll(txt_args, db, chat_id, username)
     elif command == '/initiative_roll':
@@ -80,18 +115,17 @@ def import_character(url, db, get):
     else:
         return f'Something went wrong importing {character_name}'
 
-def link_character(args, db, chat_id, username):
-    params = [x.strip() for x in args.split(' ')]
+@get_campaign
+def link_character(command, txt_args, db, chat_id, username, **kargs):
+    campaign = kargs.get('campaign')
+    campaign_id = kargs.get('campaign_id')
+    params = [x.strip() for x in txt_args.split(' ')]
 
     character_id = params[0]
     if (len(params) > 1):
         player = utils.normalized_username(params[1])
     else:
         player = username
-
-    campaign_id, campaign = db.get_campaign(chat_id)
-    if campaign_id is None:
-        return f'You must be in an active campaign to link characters!'
 
     db.set_character_link(campaign_id, player, character_id)
 
@@ -228,7 +262,8 @@ def get_spells(other_username, db, chat_id, username):
     else:
         return f'{character.name} does not have any attack spells'
 
-def get_status(other_username, db, chat_id, username):
+#@get_linked_character(search=True)
+def get_status(other_username, db, chat_id, username, **kargs):
     search_param = other_username if other_username != '' else username
     search_param = utils.normalized_username(search_param)
     character = get_linked_character(db, chat_id, search_param)
@@ -272,7 +307,9 @@ def set_currency(txt_args, db, chat_id, username):
             f'{currencies["cp"]} CP | {currencies["sp"]} SP | '
             f'{currencies["ep"]} EP | {currencies["gp"]} GP | {currencies["pp"]} PP ```')
 
-def set_hp(command, txt_args, db, chat_id, username):
+@get_campaign
+@only_dm
+def set_hp(command, txt_args, db, chat_id, username, **kargs):
     args = txt_args.split(' ')
     if args[0].isdigit():
         return f'Invalid commands parameters, the correct structure is: \r\n {command}  <integer>  <username|character>'
@@ -280,26 +317,17 @@ def set_hp(command, txt_args, db, chat_id, username):
     user_param = args[0]
     points = int(args[1])
 
-    campaign_id, campaign = db.get_campaign(chat_id)
-    dm_username = campaign.get('dm_username', None)
-    if dm_username != username:
-        raise NotADM
+    check_if_user_is_dm()
 
     user_param = utils.normalized_username(user_param)
     character = get_linked_character(db, chat_id, user_param)
 
     if command == '/damage':
-        result = character.removed_hit_points + int(points)
-        if result > character.max_hit_points:
-            result = character.max_hit_points
+        character.damage(int(points))
     else:
-        result = character.removed_hit_points - int(points)
-        if result < 0:
-            result = 0
+        character.heal(int(points))
 
-    character.current_hit_points = character.max_hit_points - result
-
-    db.set_char_hp(character.id, hit_points=result)
+    db.set_char_hp(character.id, hit_points=character.removed_hit_points)
     return f'{character.name} received {points} pts of { command.replace("/", "").strip()}. HP: {character.current_hit_points}/{character.max_hit_points}'
 
 def talk(command, txt_args):

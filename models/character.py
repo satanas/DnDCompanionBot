@@ -152,6 +152,14 @@ class Character:
         else:
             return None
 
+    def heal(self, points):
+        self.current_hit_points = min(self.max_hit_points, self.current_hit_points + points)
+        self.removed_hit_points = self.max_hit_points - self.current_hit_points
+
+    def damage(self, points):
+        self.current_hit_points = max(0, self.current_hit_points - points)
+        self.removed_hit_points = self.max_hit_points - self.current_hit_points
+
     def __calculate_modifiers(self):
         mods = {
             'str': self.str_mod,

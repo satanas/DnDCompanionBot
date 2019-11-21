@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
 from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells, \
-                               initiative_roll, short_rest_roll, get_weapons
+                               initiative_roll, short_rest_roll, get_weapons, set_hp
 
 CHARACTER_JSON = {
     'character': {
@@ -92,7 +92,7 @@ class TestCharacter(unittest.TestCase):
     def test_link_character_without_params(self):
         # execution
         args = '987654321'
-        rtn = link_character(args, self.db, self.chat_id, self.username)
+        rtn = link_character('/link_char', args, self.db, self.chat_id, self.username)
 
         # expected
         self.db.set_character_link.assert_called_with(self.campaign_id, self.username, args)
@@ -101,7 +101,7 @@ class TestCharacter(unittest.TestCase):
     def test_link_character_with_params(self):
         # execution
         args = '987654321 @foobar'
-        rtn = link_character(args, self.db, self.chat_id, self.username)
+        rtn = link_character('/link_char', args, self.db, self.chat_id, self.username)
 
         # expected
         self.db.set_character_link.assert_called_with(self.campaign_id, 'foobar', '987654321')
@@ -121,6 +121,61 @@ class TestCharacter(unittest.TestCase):
         # expected
         self.assertEqual(True, rtn.find("@foo short rest roll for Amarok Skullsorrow:\r\nFormula: 1d6 + CON(0)\r\n*1d6+0*") == 0)
 
+    def test_get_spells_without_username(self):
+        # execution
+        rtn = get_spells('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
+        self.assertEqual("Attack spells for Amarok Skullsorrow: thunderclap, create-bonfire, fire-bolt, magic-missile", rtn)
+
+    def test_get_spells_with_username(self):
+        # execution
+        rtn = get_spells('foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
+        self.assertEqual("Attack spells for Amarok Skullsorrow: thunderclap, create-bonfire, fire-bolt, magic-missile", rtn)
+
+    def test_get_spells_with_no_spells(self):
+         # conditions
+        character = self.__get_character()
+        character.spells = []
+        self.db.get_character = Mock(return_value=character)
+
+        # execution
+        rtn = get_spells('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual("Amarok Skullsorrow does not have any attack spells", rtn)
+
+    def test_get_weapons_without_username(self):
+        # execution
+        rtn = get_weapons('', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
+
+    def test_get_weapons_with_username(self):
+        # execution
+        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
+        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
+
+    def test_get_weapons_with_no_weapons(self):
+        # conditions
+        character = self.__get_character()
+        character.weapons = []
+        self.db.get_character = Mock(return_value=character)
+
+        # execution
+        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual(f"Amarok Skullsorrow does not have any weapon", rtn)
 
     def test_status_without_params(self):
         # execution
@@ -139,6 +194,9 @@ class TestCharacter(unittest.TestCase):
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
         self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
                         f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
+
+    def test_set_hp_with_invalid_params(self):
+        rtn = set_hp
 
     def test_ability_check_with_empty_params(self):
         # execution
@@ -167,42 +225,6 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.assertEqual('Invalid skill. Supported options: athletics', rtn)
-
-    def test_get_spells(self):
-        # execution
-        rtn = get_spells('', self.db, self.chat_id, self.username)
-
-        # expected
-        self.assertEqual("Attack spells for Amarok Skullsorrow: thunderclap, create-bonfire, fire-bolt, magic-missile", rtn)
-
-    def test_get_weapons_without_username(self):
-        # execution
-        rtn = get_weapons('', self.db, self.chat_id, self.username)
-
-        # expected
-        self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
-        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
-
-    def test_get_weapons_with_username(self):
-        # execution
-        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
-
-        # expected
-        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
-        self.assertEqual(f"Weapons in Amarok Skullsorrow's inventory: dagger, dagger, quarterstaff, crossbow, dart, sling", rtn)
-
-    def test_get_weapons_with_no_weapons(self):
-        # conditions
-        character = self.__get_character()
-        character.weapons = []
-        self.db.get_character = Mock(return_value=character)
-
-        # execution
-        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
-
-        # expected
-        self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
-        self.assertEqual(f"Amarok Skullsorrow does not have any weapon", rtn)
 
 
 
