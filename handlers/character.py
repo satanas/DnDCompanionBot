@@ -32,6 +32,7 @@ CURRENCY_PATTERN = re.compile('([-]?\d+)(cp|sp|ep|gp|pp)*(\d+)*')
 # Decorators
 # ==============================
 
+# get_campaign(only_dm(set_hp()))
 def get_campaign(func):
     def fetch(command, txt_args, db, chat_id, username, **kargs):
         campaign_id, campaign = db.get_campaign(chat_id)
@@ -39,28 +40,27 @@ def get_campaign(func):
             raise CampaignNotFound
         kargs['campaign'] = campaign
         kargs['campaign_id'] = campaign_id
-            #return f'You must be in an active campaign to run {command}'
-        return func(command, txt_args, db, chat_id, username, kargs)
+        return func(command, txt_args, db, chat_id, username, **kargs)
     return fetch
 
 #def get_linked_character(db, chat_id, username):
-def get_linked_character(func):
+def get_linked_character_deco(func):
     def wrapper(command, txt_args, db, chat_id, username, **kargs):
         kargs['character_id'] = db.get_character_id(kargs.get('campaign_id'), username)
-        kargs['character'] = db.get_character(kargs['character_id'], find_by_id=True)
+        kargs['character'] = db.get_character(kargs.get('character_id'), find_by_id=True)
 
-        if kargs['character'] == None:
+        if kargs.get('character') == None:
             raise CharacterNotFound
 
-        return func(command, txt_args, db, chat_id, username, kargs)
+        return func(command, txt_args, db, chat_id, username, **kargs)
     return wrapper
 
 def only_dm(func):
     def validation(command, txt_args, db, chat_id, username, **kargs):
-        dm_username = kargs['campaign'].get('dm_username', None)
+        dm_username = kargs.get('campaign').get('dm_username', None)
         if dm_username != username:
             raise NotADM
-        return func(command, txt_args, db, chat_id, username, kargs)
+        return func(command, txt_args, db, chat_id, username, **kargs)
     return validation
 
 # ==============================
@@ -318,8 +318,6 @@ def set_hp(command, txt_args, db, chat_id, username, **kargs):
 
     user_param = args[0]
     points = int(args[1])
-
-    check_if_user_is_dm()
 
     user_param = utils.normalized_username(user_param)
     character = get_linked_character(db, chat_id, user_param)
