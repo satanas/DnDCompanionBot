@@ -5,8 +5,6 @@ import utils
 from database import Database
 from exceptions import CampaignNotFound, NotADM
 
-from PIL import Image, ImageDraw, ImageFont
-
 def handler(bot, update, command, txt_args):
     db = Database()
     chat_id = update.message.chat.id
@@ -24,10 +22,7 @@ def handler(bot, update, command, txt_args):
     elif command == '/map':
         response = render_map(chat_id, db)
 
-    if command == '/map':
-        bot.send_photo(chat_id=chat_id, photo=open(response, 'rb'))
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
 
 def start_campaign(chat_id, text, db):
     campaign_id, campaign = db.get_campaign(chat_id)
@@ -110,7 +105,7 @@ def render_map(chat_id, db):
         else:
             coords[int(y)][string.ascii_uppercase.index(x)] = character
 
-    bf_map = ''
+    bf_map = '```'
     letters = string.ascii_uppercase
     for y in range(battle_field['heigth'] + 4):
         for x in range(battle_field['width'] + 1):
@@ -142,18 +137,7 @@ def render_map(chat_id, db):
 
                 if x == battle_field['width']:
                     bf_map += '\n'
-
-    filename = "battle_field.png"
-
-    fnt = ImageFont.truetype('./fonts/SourceCodePro-Regular.ttf', 11)
-
-    image = Image.new(mode = "RGB", size = (battle_field['width']*42,battle_field['heigth']*19), color = (0,0,0))
-    d = ImageDraw.Draw(image)
-    d.text((10,10), bf_map, font=fnt, fill=(255,255,255))
-
-    image.save(filename)
-
-    return filename
+    return bf_map + '```'
 
 if __name__ == "__main__":
     db = Database()

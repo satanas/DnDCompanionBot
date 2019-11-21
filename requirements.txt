@@ -1,5 +1,11 @@
+certifi==2019.9.11
+chardet==3.0.4
+coverage==4.5.4
+future==0.18.2
+idna==2.7
+nose2==0.9.1
+python-firebase==1.2
 python-telegram-bot==8.1.1
 requests==2.20.0
-python-firebase==1.2
-nose2==0.9.1
-pillow
+six==1.13.0
+urllib3==1.24.3
