@@ -10,6 +10,7 @@ from database import Database
 from utils import normalized_username
 from currency import optimal_exchange
 from models.character import Character, ABILITIES, SKILLS
+from decorators import only_dm, get_campaign, get_linked_character_deco
 from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand, NotADM
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
@@ -28,42 +29,6 @@ SIZE_MODIFIER = {
 
 CURRENCY_PATTERN = re.compile('([-]?\d+)(cp|sp|ep|gp|pp)*(\d+)*')
 
-# ==============================
-# Decorators
-# ==============================
-
-# get_campaign(only_dm(set_hp()))
-def get_campaign(func):
-    def fetch(command, txt_args, db, chat_id, username, **kargs):
-        campaign_id, campaign = db.get_campaign(chat_id)
-        if campaign_id is None:
-            raise CampaignNotFound
-        kargs['campaign'] = campaign
-        kargs['campaign_id'] = campaign_id
-        return func(command, txt_args, db, chat_id, username, **kargs)
-    return fetch
-
-#def get_linked_character(db, chat_id, username):
-def get_linked_character_deco(func):
-    def wrapper(command, txt_args, db, chat_id, username, **kargs):
-        kargs['character_id'] = db.get_character_id(kargs.get('campaign_id'), username)
-        kargs['character'] = db.get_character(kargs.get('character_id'), find_by_id=True)
-
-        if kargs.get('character') == None:
-            raise CharacterNotFound
-
-        return func(command, txt_args, db, chat_id, username, **kargs)
-    return wrapper
-
-def only_dm(func):
-    def validation(command, txt_args, db, chat_id, username, **kargs):
-        dm_username = kargs.get('campaign').get('dm_username', None)
-        if dm_username != username:
-            raise NotADM
-        return func(command, txt_args, db, chat_id, username, **kargs)
-    return validation
-
-# ==============================
 
 def handler(bot, update, command, txt_args):
     db = Database()
