@@ -1,0 +1,28 @@
+{
+    "message": {
+        "chat": {
+            "all_members_are_administrators": true,
+            "id": -350964049,
+            "title": "Async DnD",
+            "type": "group"
+        },
+        "date": 1574296962,
+        "entities": [
+            {
+                "length": 5,
+                "offset": 0,
+                "type": "bot_command"
+            }
+        ],
+        "from": {
+            "first_name": "Sergio",
+            "id": 5295325,
+            "is_bot": false,
+            "last_name": "Bruni",
+            "username": "sergsss"
+        },
+        "message_id": 2619,
+        "text": "/move H12"
+    },
+    "update_id": 365091756
+}
