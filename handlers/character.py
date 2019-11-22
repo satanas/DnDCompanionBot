@@ -10,7 +10,7 @@ from database import Database
 from utils import normalized_username
 from currency import optimal_exchange
 from models.character import Character, ABILITIES, SKILLS
-from decorators import only_dm, get_campaign, get_linked_character_deco
+from decorators import only_dm, get_campaign, get_character
 from exceptions import CharacterNotFound, CampaignNotFound, InvalidCommand, NotADM
 
 CLOSE_COMBAT_DISTANCE = 5 # feet
@@ -229,7 +229,7 @@ def get_spells(other_username, db, chat_id, username):
     else:
         return f'{character.name} does not have any attack spells'
 
-#@get_linked_character(search=True)
+#@get_character(search=True)
 def get_status(other_username, db, chat_id, username, **kargs):
     search_param = other_username if other_username != '' else username
     search_param = utils.normalized_username(search_param)
