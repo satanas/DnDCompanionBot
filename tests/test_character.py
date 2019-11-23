@@ -109,21 +109,21 @@ class TestCharacter(unittest.TestCase):
 
     def test_initiative_roll(self):
         # execution
-        rtn = initiative_roll('', self.db, self.chat_id, self.username)
+        rtn = initiative_roll('/initiative_roll', '', self.db, self.chat_id, self.username)
 
         # expected
         self.assertEqual(True, rtn.find("@foo initiative roll for Amarok Skullsorrow:\r\nFormula: 1d20 + DEX(1)\r\n*1d20+1*") == 0)
 
     def test_short_rest_roll(self):
         # execution
-        rtn = short_rest_roll('', self.db, self.chat_id, self.username)
+        rtn = short_rest_roll('/short_rest_roll', '', self.db, self.chat_id, self.username)
 
         # expected
         self.assertEqual(True, rtn.find("@foo short rest roll for Amarok Skullsorrow:\r\nFormula: 1d6 + CON(0)\r\n*1d6+0*") == 0)
 
     def test_get_spells_without_username(self):
         # execution
-        rtn = get_spells('', self.db, self.chat_id, self.username)
+        rtn = get_spells('/spells', '', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
@@ -131,7 +131,7 @@ class TestCharacter(unittest.TestCase):
 
     def test_get_spells_with_username(self):
         # execution
-        rtn = get_spells('foobar', self.db, self.chat_id, self.username)
+        rtn = get_spells('/spells', 'foobar', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
@@ -144,14 +144,14 @@ class TestCharacter(unittest.TestCase):
         self.db.get_character = Mock(return_value=character)
 
         # execution
-        rtn = get_spells('', self.db, self.chat_id, self.username)
+        rtn = get_spells('/spells', '', self.db, self.chat_id, self.username)
 
         # expected
         self.assertEqual("Amarok Skullsorrow does not have any attack spells", rtn)
 
     def test_get_weapons_without_username(self):
         # execution
-        rtn = get_weapons('', self.db, self.chat_id, self.username)
+        rtn = get_weapons('/weapons', '', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, self.username)
@@ -159,7 +159,7 @@ class TestCharacter(unittest.TestCase):
 
     def test_get_weapons_with_username(self):
         # execution
-        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+        rtn = get_weapons('/weapons', 'foobar', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
@@ -172,7 +172,7 @@ class TestCharacter(unittest.TestCase):
         self.db.get_character = Mock(return_value=character)
 
         # execution
-        rtn = get_weapons('foobar', self.db, self.chat_id, self.username)
+        rtn = get_weapons('/weapons', 'foobar', self.db, self.chat_id, self.username)
 
         # expected
         self.assertEqual(f"Amarok Skullsorrow does not have any weapon", rtn)

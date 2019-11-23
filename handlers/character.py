@@ -185,8 +185,10 @@ def attack_roll(txt_args, db, chat_id, username):
             f"\r\nFormula: {txt_formula}"
             f"\r\n*{dice_notation}*: {dice_rolls}")
 
-def initiative_roll(txt_args, db, chat_id, username):
-    character = get_linked_character(db, chat_id, username)
+@get_campaign
+@get_character
+def initiative_roll(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
     dice_notation = f'1d20+{character.dex_mod}'
     results = roll(dice_notation)
     dice_rolls = results[list(results.keys())[0]][0]
@@ -194,8 +196,10 @@ def initiative_roll(txt_args, db, chat_id, username):
             f'\r\nFormula: 1d20 + DEX({character.dex_mod})'
             f'\r\n*{dice_notation}*: {dice_rolls}')
 
-def short_rest_roll(txt_args, db, chat_id, username):
-    character = get_linked_character(db, chat_id, username)
+@get_campaign
+@get_character(from_params=True)
+def short_rest_roll(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
 
     if character.hit_dice_used == character.level:
         return f'{character.name} spent all the hit dice already. You need to take a long rest to replenish them.'
@@ -207,10 +211,10 @@ def short_rest_roll(txt_args, db, chat_id, username):
             f'\r\nFormula: 1d{character.hit_dice} + CON({character.con_mod})'
             f'\r\n*{dice_notation}*: {dice_rolls}')
 
-def get_weapons(other_username, db, chat_id, username):
-    search_param = other_username if other_username != '' else username
-    search_param = utils.normalized_username(search_param)
-    character = get_linked_character(db, chat_id, search_param)
+@get_campaign
+@get_character(from_params=True)
+def get_weapons(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
 
     if len(character.weapons) > 0:
         weapons = ', '.join([w.name for w in character.weapons])
@@ -218,10 +222,10 @@ def get_weapons(other_username, db, chat_id, username):
     else:
         return f'{character.name} does not have any weapon'
 
-def get_spells(other_username, db, chat_id, username):
-    search_param = other_username if other_username != '' else username
-    search_param = utils.normalized_username(search_param)
-    character = get_linked_character(db, chat_id, search_param)
+@get_campaign
+@get_character(from_params=True)
+def get_spells(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
 
     if len(character.spells) > 0:
         spells = ', '.join([s.name for s in character.spells])
