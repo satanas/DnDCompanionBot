@@ -42,13 +42,13 @@ def handler(bot, update, command, txt_args):
     elif command == '/attack_roll':
         response = attack_roll(txt_args, db, chat_id, username)
     elif command == '/initiative_roll':
-        response = initiative_roll(txt_args, db, chat_id, username)
+        response = initiative_roll(command, txt_args, db, chat_id, username)
     elif command == '/short_rest_roll':
-        response = short_rest_roll(txt_args, db, chat_id, username)
+        response = short_rest_roll(command, txt_args, db, chat_id, username)
     elif command == '/weapons':
-        response = get_weapons(txt_args, db, chat_id, username)
+        response = get_weapons(command, txt_args, db, chat_id, username)
     elif command == '/spells':
-        response = get_spells(txt_args, db, chat_id, username)
+        response = get_spells(command, txt_args, db, chat_id, username)
     elif command == '/status':
         response = get_status(command, txt_args, db, chat_id, username)
     elif command == '/set_currency':
@@ -279,24 +279,23 @@ def set_currency(txt_args, db, chat_id, username):
 
 @get_campaign
 @only_dm
+@get_character(from_params=True)
 def set_hp(command, txt_args, db, chat_id, username, **kargs):
     args = txt_args.split(' ')
-    if args[0].isdigit():
-        return f'Invalid commands parameters, the correct structure is: \r\n {command}  <integer>  <username|character>'
+    if len(args) < 2 or args[1].isdigit() is False:
+        return f'Invalid commands parameters, the correct structure is: \r\n {command} <username|character> <hp>'
 
-    user_param = args[0]
     points = int(args[1])
+    character = kargs.get('character')
+    command = command.replace('/', '').strip()
 
-    user_param = utils.normalized_username(user_param)
-    character = get_linked_character(db, chat_id, user_param)
-
-    if command == '/damage':
-        character.damage(int(points))
+    if command == 'damage':
+        character.damage(points)
     else:
-        character.heal(int(points))
+        character.heal(points)
 
     db.set_char_hp(character.id, hit_points=character.removed_hit_points)
-    return f'{character.name} received {points} pts of { command.replace("/", "").strip()}. HP: {character.current_hit_points}/{character.max_hit_points}'
+    return f'{character.name} received {points} pts of {command}. HP: {character.current_hit_points}/{character.max_hit_points}'
 
 def talk(command, txt_args):
     args = txt_args.split(' ')
