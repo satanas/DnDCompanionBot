@@ -1,0 +1,79 @@
+{
+    "definition": {
+        "attackType": 1,
+        "attunementDescription": null,
+        "avatarUrl": null,
+        "baseItemId": 3,
+        "baseTypeId": 1782728300,
+        "bundleSize": 1,
+        "canAttune": false,
+        "canBeAddedToInventory": true,
+        "canEquip": true,
+        "categoryId": 1,
+        "cost": 2.0,
+        "damage": {
+            "diceCount": 1,
+            "diceMultiplier": null,
+            "diceString": "1d4",
+            "diceValue": 4,
+            "fixedValue": null
+        },
+        "damageType": "Piercing",
+        "description": "<p>Proficiency with a dagger allows you to add your proficiency bonus to the attack roll for any attack you make with it.</p>",
+        "entityTypeId": 1782728300,
+        "filterType": "Weapon",
+        "fixedDamage": null,
+        "grantedModifiers": [],
+        "groupedId": null,
+        "id": 3,
+        "isHomebrew": false,
+        "isMonkWeapon": true,
+        "isPack": false,
+        "largeAvatarUrl": null,
+        "levelInfusionGranted": null,
+        "longRange": 60,
+        "magic": false,
+        "name": "Dagger",
+        "properties": [
+            {
+                "description": "When making an attack with a finesse weapon, you use your choice of your Strength or Dexterity modifier for the attack and damage rolls. You must use the same modifier for both rolls. ",
+                "id": 8,
+                "name": "Finesse",
+                "notes": null
+            },
+            {
+                "description": "A light weapon is small and easy to handle, making it ideal for use when fighting with two weapons. ",
+                "id": 9,
+                "name": "Light",
+                "notes": null
+            },
+            {
+                "description": "If a weapon has the thrown property, you can throw the weapon to make a ranged attack. If the weapon is a melee weapon, you use the same ability modifier for that attack roll and damage roll that you would use for a melee attack with the weapon. For example, if you throw a handaxe, you use your Strength, but if you throw a dagger, you can use either your Strength or your Dexterity, since the dagger has the finesse property. ",
+                "id": 10,
+                "name": "Thrown",
+                "notes": null
+            }
+        ],
+        "range": 20,
+        "rarity": "Common",
+        "snippet": null,
+        "sourceId": null,
+        "sourcePageNumber": null,
+        "stackable": false,
+        "tags": [
+            "Damage",
+            "Combat"
+        ],
+        "type": "Dagger",
+        "version": null,
+        "weaponBehaviors": [],
+        "weight": 1.0
+    },
+    "displayAsAttack": null,
+    "entityTypeId": 1439493548,
+    "equipped": true,
+    "id": 151349461,
+    "isAttuned": null,
+    "limitedUse": null,
+    "quantity": 1
+}
