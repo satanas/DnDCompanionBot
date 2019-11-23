@@ -20,9 +20,13 @@ class TestCharacter(unittest.TestCase):
         self.chat_id = 123456
         self.username = 'foo'
         self.character_id = 987654321
+        self.campaign = {
+            'dm_username': 'foo'
+        }
+
         self.db = Mock()
         self.db.set_character_link = Mock(return_value=True)
-        self.db.get_campaign = Mock(return_value=(self.campaign_id, None))
+        self.db.get_campaign = Mock(return_value=(self.campaign_id, self.campaign))
         self.db.get_character_id = Mock(return_value=(self.character_id))
         self.db.get_character = Mock(return_value=self.__get_character())
 
@@ -183,7 +187,7 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foo')
-        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
+        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer | Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
                         f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
 
     def test_status_with_params(self):
@@ -192,11 +196,29 @@ class TestCharacter(unittest.TestCase):
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
-        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
+        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer | Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
                         f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
 
+    def test_set_hp_with_empty_params(self):
+        # execution
+        rtn = set_hp('/damage', '', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('Invalid command. Usage: /damage <username|character> <hp>', rtn)
+
     def test_set_hp_with_invalid_params(self):
-        rtn = set_hp
+        # execution
+        rtn = set_hp('/damage', '9 @foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('Invalid command. Usage: /damage <username|character> <hp>', rtn)
+
+    def test_set_hp_with_valid_params(self):
+        # execution
+        rtn = set_hp('/damage', '@foobar 9', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('Amarok Skullsorrow received 9 pts of damage. HP: 0/6', rtn)
 
     def test_ability_check_with_empty_params(self):
         # execution

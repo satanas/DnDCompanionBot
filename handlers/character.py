@@ -238,7 +238,7 @@ def get_spells(command, txt_args, db, chat_id, username, **kargs):
 def get_status(command, txt_args, db, chat_id, username, **kargs):
     character = kargs.get('character')
 
-    return (f'```\r\n{character.name} | {character.race} {character._class} Level {character.level}\r\n'
+    return (f'```\r\n{character.name} | {character.race} {character._class} | Level {character.level}\r\n'
             f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed} \r\n'
             f'{character.currency["cp"]} CP | '
             f'{character.currency["sp"]} SP | '
@@ -283,7 +283,7 @@ def set_currency(txt_args, db, chat_id, username):
 def set_hp(command, txt_args, db, chat_id, username, **kargs):
     args = txt_args.split(' ')
     if len(args) < 2 or args[1].isdigit() is False:
-        return f'Invalid commands parameters, the correct structure is: \r\n {command} <username|character> <hp>'
+        return f'Invalid command. Usage: {command} <username|character> <hp>'
 
     points = int(args[1])
     character = kargs.get('character')

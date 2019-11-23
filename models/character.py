@@ -160,6 +160,13 @@ class Character:
         self.current_hit_points = max(0, self.current_hit_points - points)
         self.removed_hit_points = self.max_hit_points - self.current_hit_points
 
+    def add_xp(self, points):
+        self.current_experience += points
+        for i in range(0, len(LEVEL_CHART)):
+            if self.current_experience <= LEVEL_CHART[i]:
+                self.level = i + 1
+                break
+
     def __calculate_modifiers(self):
         mods = {
             'str': self.str_mod,

@@ -141,6 +141,16 @@ class Database:
                                       data={'currencies': currencies},
                                       params={'auth': FIREBASE_API_SECRET})
 
+    def set_char_xp(self, character_id, xp):
+        return self.firebase_db.patch(f'/characters/{character_id}/character',
+                                      data={'currentXp': int(xp)},
+                                      params={'auth': FIREBASE_API_SECRET})
+
+    def set_char_level(self, character_id, level):
+        return self.firebase_db.patch(f'/characters/{character_id}/character/classes/0',
+                                      data={'level': int(level)},
+                                      params={'auth': FIREBASE_API_SECRET})
+
 class CampaignActiveException(Exception):
     def __init__(self, message):
         super().__init__(message)

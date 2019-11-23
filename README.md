@@ -21,6 +21,9 @@ Campaign commands | Action
 /next_turn | moves to the next player in the turns list
 /set_dm \<username\> | sets the username of the DM for the current campaign
 /dm | shows the DM for the current campaign
+/start_battle \<width\>, \<height\> | generates a new battle field
+/set_positions \<expression\> | set characters positions at the battle field
+/map | set characters positions at the battle field
 
 Character commands | Action
 --------|-------
@@ -28,13 +31,20 @@ Character commands | Action
 /link_char \<char\_id\>, (username) | links character to target username or self username
 /status \<username\|character\> | shows the list of weapons of a character
 /weapons \<username\|character\> | shows the list of weapons of a character
-/attack_roll \<weapon\>, \<melee\|range\>, (distance), (adv\|disadv) | performs an attack roll on a character
+/spells \<username\|character\> | shows the list of damage spells of a character
+/currency \<username\|character\> | shows the currency pouch of a character
+/damage \<username\|character\>, \<hp\> | apply damage to a character
+/heal \<username\|character\>, \<hp\> | apply heal to a character
+/attack_roll \<weapon\|spell\>, \<melee\|range\>, (distance), (adv\|disadv) | performs an attack roll on a character
 /initiative_roll \<character\> | performs an initiative roll for a character
 /short_rest_roll \<username\|character\> | performs an short rest roll for a character
 /ability_check \<ability\>, (skill) | performs an ability check or a skill check if skill is specified
 /say \<character\>, \<message\> | prints a message using in-game conversation format
 /whisper \<character\>, \<message\> | prints a whisper message using in-game conversation format
 /yell \<character\>, \<message\> | prints a yell message using in-game conversation format
+/move \<character for dm\> | moves your character on the battle field
+/set_currency \<username\|character\>, \<expression\> | set the currency pouch of a character
+/add_xp \<username\|character\>, \<xp\> | adds points of experience to a character
 
 
 ## What do I need?

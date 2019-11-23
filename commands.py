@@ -44,8 +44,8 @@ CHARACTER_COMMANDS = {
     "/weapons": (character_handler, ["<username|character>"], "shows the list of weapons of a character"),
     "/spells": (character_handler, ["<username|character>"], "shows the list of damage spells of a character"),
     "/currency": (character_handler, ["<username|character>"], "shows the currency pouch of a character"),
-    "/damage": (character_handler, ["<username|character>", "(damage)"], "apply damage to a character"),
-    "/heal": (character_handler, ["<username|character>", "(damage)"], "apply heal to a character"),
+    "/damage": (character_handler, ["<username|character>", "<hp>"], "apply damage to a character"),
+    "/heal": (character_handler, ["<username|character>", "<hp>"], "apply heal to a character"),
     "/attack_roll": (character_handler, ["<weapon|spell>", "<melee|range>", "(distance)", "(adv|disadv)"], "performs an attack roll on a character"),
     "/initiative_roll": (character_handler, ["<character>"], "performs an initiative roll for a character"),
     "/short_rest_roll": (character_handler, ["<username|character>"], "performs an short rest roll for a character"),
@@ -55,6 +55,7 @@ CHARACTER_COMMANDS = {
     "/yell": (character_handler, ["<character>", "<message>"], "prints a yell message using in-game conversation format"),
     "/move": (character_handler, ["<character for dm>"], "moves your character on the battle field"),
     "/set_currency": (character_handler, ["<username|character>", "<expression>"], "set the currency pouch of a character"),
+    "/add_xp": (dm_handler, ["<username|character>", "<xp>"], "adds points of experience to a character"),
 }
 
 ALL_COMMANDS = {}
