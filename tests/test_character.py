@@ -179,7 +179,7 @@ class TestCharacter(unittest.TestCase):
 
     def test_status_without_params(self):
         # execution
-        rtn = get_status('', self.db, self.chat_id, self.username)
+        rtn = get_status('/status', '', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foo')
@@ -188,7 +188,7 @@ class TestCharacter(unittest.TestCase):
 
     def test_status_with_params(self):
         # execution
-        rtn = get_status('@foobar', self.db, self.chat_id, self.username)
+        rtn = get_status('/status', '@foobar', self.db, self.chat_id, self.username)
 
         # expected
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')

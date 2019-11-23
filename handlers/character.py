@@ -50,7 +50,7 @@ def handler(bot, update, command, txt_args):
     elif command == '/spells':
         response = get_spells(txt_args, db, chat_id, username)
     elif command == '/status':
-        response = get_status(txt_args, db, chat_id, username)
+        response = get_status(command, txt_args, db, chat_id, username)
     elif command == '/set_currency':
         response = set_currency(txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
@@ -229,11 +229,10 @@ def get_spells(other_username, db, chat_id, username):
     else:
         return f'{character.name} does not have any attack spells'
 
-#@get_character(search=True)
-def get_status(other_username, db, chat_id, username, **kargs):
-    search_param = other_username if other_username != '' else username
-    search_param = utils.normalized_username(search_param)
-    character = get_linked_character(db, chat_id, search_param)
+@get_campaign
+@get_character(from_params=True)
+def get_status(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
 
     return (f'```\r\n{character.name} | {character.race} {character._class} Level {character.level}\r\n'
             f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed} \r\n'

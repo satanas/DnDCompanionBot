@@ -1,3 +1,5 @@
+import utils
+
 from exceptions import CharacterNotFound, CampaignNotFound, NotADM
 
 def only_dm(func):
@@ -22,17 +24,28 @@ def get_campaign(func):
         return func(command, txt_args, db, chat_id, username, **kargs)
     return wrapper
 
-def get_character(func):
-    def wrapper(command, txt_args, db, chat_id, username, **kargs):
-        if 'campaign' not in kargs:
-            raise CampaignNotFound
+def get_character(_func=None, *, from_params=False):
+    def get_character_decorator(func):
+        def wrapper(command, txt_args, db, chat_id, username, **kargs):
+            if 'campaign' not in kargs:
+                raise CampaignNotFound
 
-        kargs['character_id'] = db.get_character_id(kargs.get('campaign_id'), username)
-        kargs['character'] = db.get_character(kargs.get('character_id'), find_by_id=True)
+            args = txt_args.split(' ')
 
-        if kargs.get('character') is None:
-            raise CharacterNotFound
+            search_param = args[0] if from_params is True and len(args) > 0 and args[0] != '' else username
+            search_param = utils.normalized_username(search_param)
 
-        return func(command, txt_args, db, chat_id, username, **kargs)
-    return wrapper
+            kargs['character_id'] = db.get_character_id(kargs.get('campaign_id'), search_param)
+            kargs['character'] = db.get_character(kargs.get('character_id'), find_by_id=True)
+
+            if kargs.get('character') is None:
+                raise CharacterNotFound
+
+            return func(command, txt_args, db, chat_id, username, **kargs)
+        return wrapper
+
+    if _func is None:
+        return get_character_decorator
+    else:
+        return get_character_decorator(_func)
 
