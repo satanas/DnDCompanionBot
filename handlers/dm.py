@@ -47,6 +47,6 @@ def add_xp(command, txt_args, db, chat_id, username, **kargs):
 
     character.add_xp(points)
 
-    db.set_char_xp(character.id, xp_points=character.current_experience)
+    db.set_char_xp(character.id, xp=character.current_experience)
     db.set_char_level(character.id, level=character.level)
     return f'{character.name} received {points} pts of experience. XP: {character.current_experience} | Level: {character.level}'
