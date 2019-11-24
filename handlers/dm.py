@@ -5,9 +5,10 @@ def handler(bot, update, command, txt_args):
     db = Database()
     chat_id = update.message.chat.id
     text = update.message.text
+    username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
+
     if command == '/set_dm':
         user_id = update.message.from_user.id
-        username = update.message.from_user.username
         response = set_dm(chat_id, user_id, username, db)
     elif command == '/dm':
         response = get_dm(chat_id, db)
