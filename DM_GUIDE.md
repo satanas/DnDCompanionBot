@@ -176,6 +176,9 @@ Random dungeon generator:
 D&D 5E Database/API
 * https://github.com/adrpadua/5e-database
 
+D&D Collection of traps and hazards
+* https://www.tribality.com/2016/07/29/a-collection-of-traps-hazards-dd-5e/
+
 # References:
 
 * [1] [Quick and Easy D&D Adventures](https://thelongshotist.com/2017/01/27/quick-and-easy-dd-adventures/)

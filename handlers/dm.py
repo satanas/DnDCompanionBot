@@ -11,7 +11,7 @@ def handler(bot, update, command, txt_args):
         response = set_dm(chat_id, user_id, username, db)
     elif command == '/dm':
         response = get_dm(chat_id, db)
-    elif command == 'add_xp':
+    elif command == '/add_xp':
         response = add_xp(command, txt_args, db, chat_id, username)
     else:
         response = "Invalid command"
