@@ -110,7 +110,19 @@ Follow the instructions from the section [Installing locally](#installing-locall
 $ nose2 -v
 ```
 
-## Notes
+## How to use the bot
+
+### Import character from DndBeyond
+
+1. Make sure your character is up-to-date in DnDBeyond.
+2. Go to `https://www.dndbeyond.com/profile/{username}/characters/{character_id}/json` (replacing `{username}` with
+your username and `character_id` with the ID of your character)
+3. Copy the output JSON and paste it on a public location (Github Gist, Drive, Dropbox, etc)
+4. Go to the Telegram chat where you're playing and execute `/link_char {json_url}` (where `{json_url} is the URL to
+the public JSON you created in step 3).
+5. Profit!
+
+## Other notes
 AWS credentials saved on your machine at ~/.aws/credentials.
 
 ## References
