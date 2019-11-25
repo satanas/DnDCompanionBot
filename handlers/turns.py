@@ -1,11 +1,8 @@
 from database import Database
 
-def handler(bot, update, command, txt_args):
-    db = Database()
-    chat_id = update.message.chat.id
-    text = update.message.text
+def handler(bot, update, command, txt_args, username, chat_id, db):
     if command == '/set_turns':
-        response = set_turns(chat_id, text, db)
+        response = set_turns(chat_id, txt_args, db)
     elif command == '/turn':
         response = get_current_turn(chat_id, db)
     elif command == '/next_turn':
@@ -24,8 +21,8 @@ def get_turns_info(chat_id, db):
     return (turns, turn_index, campaign_id)
 
 # TODO: Test with chat_id, '/set_turns logan, bruce, tony
-def set_turns(chat_id, text, db):
-    command = text.replace('/set_turns', '').strip()
+def set_turns(chat_id, txt_args, db):
+    command = txt_args.replace('/set_turns', '').strip()
     turns = [u.strip() for u in command.split(',')]
     campaign_id, campaign = db.get_campaign(chat_id)
     db.set_turns(campaign_id, turns)

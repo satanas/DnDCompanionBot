@@ -4,6 +4,7 @@ import json
 import logging
 import telegram
 
+from database import Database
 from commands import command_handler, default_handler, is_command, parse_command
 from exceptions import CommandNotFound, CharacterNotFound, CampaignNotFound, InvalidCommand, NotADM
 
@@ -53,14 +54,16 @@ def webhook(event, context):
         if not is_command(update):
             return OK_RESPONSE
 
+        db = Database()
+        chat_id = update.message.chat.id
         username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
         command = parse_command(update.message.text)
         txt_args = ' '.join(update.message.text.split(' ')[1:])
 
         try:
-            command_handler(command)(bot, update, command, txt_args)
+            command_handler(command)(bot, update, command, txt_args, username, chat_id, db)
         except (CommandNotFound, InvalidCommand):
-            default_handler(bot, update, 'Invalid command')
+            default_handler(bot, update, 'Invalid command or command not supported')
         except CharacterNotFound:
             default_handler(bot, update, 'Character not found. Cannot execute command')
         except CampaignNotFound:

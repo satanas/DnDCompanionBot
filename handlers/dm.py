@@ -1,12 +1,7 @@
-from database import Database
+from exceptions import CampaignNotFound
 from decorators import get_campaign, only_dm, get_character
 
-def handler(bot, update, command, txt_args):
-    db = Database()
-    chat_id = update.message.chat.id
-    text = update.message.text
-    username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
-
+def handler(bot, update, command, txt_args, username, chat_id, db):
     if command == '/set_dm':
         user_id = update.message.from_user.id
         response = set_dm(chat_id, user_id, username, db)
@@ -17,10 +12,12 @@ def handler(bot, update, command, txt_args):
     else:
         response = "Invalid command"
 
-    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    bot.send_message(chat_id=chat_id, text=response, parse_mode="Markdown")
 
 def set_dm(chat_id, user_id, username, db):
     campaign_id, campaign = db.get_campaign(chat_id)
+    if campaign_id is None:
+        raise CampaignNotFound
     db.set_dm(campaign_id, user_id, username)
     return f"@{username} has been set as DM"
 

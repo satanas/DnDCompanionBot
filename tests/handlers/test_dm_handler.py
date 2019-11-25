@@ -1,11 +1,15 @@
 import unittest
 
 from unittest.mock import Mock
-from handlers.dm import add_xp
+from handlers.dm import handler, add_xp
 from tests.helper import get_test_character
+from exceptions import CampaignNotFound
 
 class TestDMHandler(unittest.TestCase):
     def setUp(self):
+        self.bot = Mock()
+        self.bot.send_message = Mock()
+        self.update = Mock()
         self.campaign_id = 666
         self.chat_id = 123456
         self.username = 'foo'
@@ -40,3 +44,25 @@ class TestDMHandler(unittest.TestCase):
 
         # expected
         self.assertEqual('Amarok Skullsorrow received 301 pts of experience. XP: 326 | Level: 2', rtn)
+
+    def test_set_dm_with_empty_campaign(self):
+        # conditions
+        self.db.get_campaign = Mock(return_value=(None, None))
+
+        #execution
+        with self.assertRaises(CampaignNotFound) as context:
+            handler(self.bot, self.update, '/set_dm', self.username, self.username, self.chat_id, self.db)
+
+    def test_set_dm_with_valid_params(self):
+        # conditions
+        self.update.message = Mock()
+        self.update.message.from_user = Mock()
+        self.update.message.from_user.id = '666'
+        self.db.set_dm = Mock()
+
+        # execution
+        rtn = handler(self.bot, self.update, '/set_dm', self.username, self.username, self.chat_id, self.db)
+
+        # expected
+        self.bot.send_message.assert_called_with(chat_id=self.chat_id, text="@foo has been set as DM", parse_mode="Markdown")
+

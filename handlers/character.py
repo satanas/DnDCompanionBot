@@ -30,11 +30,7 @@ SIZE_MODIFIER = {
 CURRENCY_PATTERN = re.compile('([-]?\d+)(cp|sp|ep|gp|pp)*(\d+)*')
 
 
-def handler(bot, update, command, txt_args):
-    db = Database()
-    chat_id = update.message.chat.id
-    username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
-
+def handler(bot, update, command, txt_args, username, chat_id, db):
     if command == '/import_char':
         response = import_character(txt_args, db, requests.get)
     if command == '/link_char':

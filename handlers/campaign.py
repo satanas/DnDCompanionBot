@@ -5,12 +5,7 @@ import utils
 from database import Database
 from exceptions import CampaignNotFound, NotADM
 
-def handler(bot, update, command, txt_args):
-    db = Database()
-    chat_id = update.message.chat.id
-    text = update.message.text
-    username = update.message.from_user.username if update.message.from_user.username else update.message.from_user.first_name
-
+def handler(bot, update, command, txt_args, username, chat_id, db):
     if command == '/start_campaign':
         response = start_campaign(chat_id, txt_args, db)
     elif command == '/close_campaign':
