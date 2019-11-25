@@ -12,7 +12,7 @@ def handler(bot, update, command, txt_args, username, chat_id, db):
     else:
         response = "Invalid command"
 
-    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    bot.send_message(chat_id=chat_id, text=response, parse_mode="Markdown")
 
 def get_turns_info(chat_id, db):
     campaign_id, campaign = db.get_campaign(chat_id)

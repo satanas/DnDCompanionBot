@@ -10,6 +10,7 @@ class TestDMHandler(unittest.TestCase):
         self.bot = Mock()
         self.bot.send_message = Mock()
         self.update = Mock()
+        self.update.message = Mock()
         self.campaign_id = 666
         self.chat_id = 123456
         self.username = 'foo'
@@ -55,7 +56,6 @@ class TestDMHandler(unittest.TestCase):
 
     def test_set_dm_with_valid_params(self):
         # conditions
-        self.update.message = Mock()
         self.update.message.from_user = Mock()
         self.update.message.from_user.id = '666'
         self.db.set_dm = Mock()

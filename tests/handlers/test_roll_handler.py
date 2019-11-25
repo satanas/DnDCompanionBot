@@ -1,8 +1,33 @@
 import unittest
 
-from handlers.roll import roll, process_notation, roll_one, response
+from unittest.mock import Mock
+
+from handlers.roll import roll, process_notation, roll_one, response, handler
 
 class TestRoll(unittest.TestCase):
+    def setUp(self):
+        self.bot = Mock()
+        self.bot.send_message = Mock()
+        self.update = Mock()
+        self.campaign_id = 666
+        self.chat_id = 123456
+        self.username = 'foo'
+        self.character_id = 987654321
+        self.campaign = {
+            'dm_username': 'foo'
+        }
+
+        self.db = Mock()
+
+    def test_roll_handler(self):
+        # conditions
+        self.db.set_dm = Mock()
+
+        # execution
+        rtn = handler(self.bot, self.update, '/roll', '1d20', self.username, self.chat_id, self.db)
+
+        # expected
+        self.bot.send_message.assert_called()
 
     def test_roll(self):
         for i in range(0, 1000):

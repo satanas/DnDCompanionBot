@@ -58,7 +58,7 @@ def handler(bot, update, command, txt_args, username, chat_id, db):
     elif command == '/ability_check':
         response = ability_check(txt_args, db, chat_id, username)
 
-    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    bot.send_message(chat_id=chat_id, text=response, parse_mode="Markdown")
 
 def import_character(url, db, get):
     parsed_url = urlparse(url)

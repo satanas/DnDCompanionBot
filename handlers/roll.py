@@ -11,7 +11,7 @@ def handler(bot, update, command, expression, username, chat_id, db):
     except Exception as e:
         resp = f"{username} {str(e)}"
 
-    bot.send_message(chat_id=update.message.chat_id, text=resp, parse_mode="Markdown")
+    bot.send_message(chat_id=chat_id, text=resp, parse_mode="Markdown")
 
 # Test cases
 # 1d4,1d6

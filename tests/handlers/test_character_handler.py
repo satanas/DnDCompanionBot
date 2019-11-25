@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
 from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells, \
-                               initiative_roll, short_rest_roll, get_weapons, set_hp
+                               initiative_roll, short_rest_roll, get_weapons, set_hp, handler
 
 CHARACTER_JSON = {
     'character': {
@@ -14,8 +14,12 @@ CHARACTER_JSON = {
     }
 }
 
-class TestCharacter(unittest.TestCase):
+class TestCharacterHandler(unittest.TestCase):
     def setUp(self):
+        self.bot = Mock()
+        self.bot.send_message = Mock()
+        self.update = Mock()
+        self.update.message = Mock()
         self.campaign_id = 666
         self.chat_id = 123456
         self.username = 'foo'
@@ -29,6 +33,18 @@ class TestCharacter(unittest.TestCase):
         self.db.get_campaign = Mock(return_value=(self.campaign_id, self.campaign))
         self.db.get_character_id = Mock(return_value=(self.character_id))
         self.db.get_character = Mock(return_value=self.__get_character())
+        self.db.set_character_link = Mock()
+
+    def test_handler_import(self):
+        # conditions
+        self.db.set_dm = Mock()
+
+        # execution
+        rtn = handler(self.bot, self.update, '/link_char', 'http://my.url', self.username, self.chat_id, self.db)
+
+        # expected
+        self.bot.send_message.assert_called_with(chat_id=self.chat_id, parse_mode="Markdown",
+                text="Character with id http://my.url linked to foo successfully!")
 
     def test_yell(self):
         cmd = '/yell'

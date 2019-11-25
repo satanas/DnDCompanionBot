@@ -17,7 +17,7 @@ def handler(bot, update, command, txt_args, username, chat_id, db):
     elif command == '/map':
         response = render_map(chat_id, db)
 
-    bot.send_message(chat_id=update.message.chat_id, text=response, parse_mode="Markdown")
+    bot.send_message(chat_id=chat_id, text=response, parse_mode="Markdown")
 
 def start_campaign(chat_id, text, db):
     campaign_id, campaign = db.get_campaign(chat_id)
