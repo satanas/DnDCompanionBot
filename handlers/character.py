@@ -48,7 +48,7 @@ def handler(bot, update, command, txt_args, username, chat_id, db):
     elif command == '/status':
         response = get_status(command, txt_args, db, chat_id, username)
     elif command == '/set_currency':
-        response = set_currency(txt_args, db, chat_id, username)
+        response = set_currency(command, txt_args, db, chat_id, username)
     elif command == '/say' or command == '/yell' or command == '/whisper':
         response = talk(command, txt_args)
     elif command == '/move':
@@ -234,44 +234,30 @@ def get_spells(command, txt_args, db, chat_id, username, **kargs):
 def get_status(command, txt_args, db, chat_id, username, **kargs):
     character = kargs.get('character')
 
-    return (f'```\r\n{character.name} | {character.race} {character._class} | Level {character.level}\r\n'
-            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed} \r\n'
-            f'{character.currency["cp"]} CP | '
-            f'{character.currency["sp"]} SP | '
-            f'{character.currency["ep"]} EP | '
-            f'{character.currency["gp"]} GP | '
-            f'{character.currency["pp"]} PP ```')
+    return __print_character_status(character)
 
-def set_currency(txt_args, db, chat_id, username):
-    campaign_id, campaign = db.get_campaign(chat_id)
-    dm_username = campaign.get('dm_username', None)
-    if dm_username != username:
-        return f'Only the Dungeon Master can execute this command'
-
+@get_campaign
+@only_dm
+@get_character(from_params=True)
+def set_currency(command, txt_args, db, chat_id, username, **kargs):
+    character = kargs.get('character')
     args = txt_args.split(' ')
+    if len(args) < 2:
+        return f'Invalid command. Usage: {command} <username|character> <currencies>'
 
-    user_param = args[0]
-    user_param = utils.normalized_username(user_param)
-    character = get_linked_character(db, chat_id, user_param)
+    equations = CURRENCY_PATTERN.findall(txt_args.replace(args[0], ''))
 
-    equation = CURRENCY_PATTERN.findall(txt_args)
+    if len(equations) <= 0:
+        return f'Your request did not have a valid equation. Please use the currency notation (for example: 10gp, -20cp)'
 
-    if len(equation) <= 0:
-        raise Exception('your request was not a valid equation! Please use the currency notation (for example: 10gp, -20cp)')
+    for c in equations:
+        success = character.add_currency(int(c[0]), c[1])
+        if not success:
+            return f'You cannot afford {c[0]}{c[1]}. Operation cancelled.'
 
-    currencies = character.currency
+    db.set_char_currency(character.id, character.currencies)
 
-    for i in range(0, len(equation)):
-        parts = equation[i]
-        currencies[parts[1]] += int(parts[0])
-        if currencies[parts[1]] < 0:
-            return f"You can't afford that ammount"
-
-    db.set_char_currency(character.id, currencies)
-
-    return (f'{character.name} currencies pouch has been updated: ```\r\n'
-            f'{currencies["cp"]} CP | {currencies["sp"]} SP | '
-            f'{currencies["ep"]} EP | {currencies["gp"]} GP | {currencies["pp"]} PP ```')
+    return __print_character_status(character)
 
 @get_campaign
 @only_dm
@@ -375,6 +361,15 @@ def ability_check(txt_args, db, chat_id, username):
     return (f"@{username} ability check for {character.name} with {ability_desc}:"
             f"\r\nFormula: {txt_formula}"
             f"\r\n*{dice_notation}*: {dice_rolls}")
+
+def __print_character_status(character):
+    return (f'```\r\n{character.name} | {character.race} {character._class} | Level {character.level}\r\n'
+            f'HP: {character.current_hit_points}/{character.max_hit_points} | XP: {character.current_experience}/{character.experience_needed} \r\n'
+            f'{character.currencies["cp"]} CP | '
+            f'{character.currencies["sp"]} SP | '
+            f'{character.currencies["ep"]} EP | '
+            f'{character.currencies["gp"]} GP | '
+            f'{character.currencies["pp"]} PP ```')
 
 def get_linked_character(db, chat_id, username):
     campaign_id, campaign = db.get_campaign(chat_id)

@@ -115,7 +115,8 @@ class Character:
         self.spells = []
 
         self.mods = self.__calculate_modifiers()
-        self.currency = self.__calculate_currency(character['currencies'])
+        #self.currency = self.__calculate_currency(character['currencies'])
+        self.currencies = character['currencies']
 
         # Define spellcasting stuff
         if character['classes'][0]['definition']['canCastSpells'] is True:
@@ -167,6 +168,13 @@ class Character:
                 self.level = i + 1
                 break
 
+    def add_currency(self, amount, unit):
+        if self.currencies[unit] + amount < 0:
+            return False
+        else:
+            self.currencies[unit] += amount
+            return True
+
     def __calculate_modifiers(self):
         mods = {
             'str': self.str_mod,
@@ -192,17 +200,6 @@ class Character:
 
     def __extract_weapons(self, character):
         return [Weapon(x) for x in character['inventory'] if x['definition']['filterType'] == "Weapon"]
-
-    def __calculate_currency(self, currencies):
-        currency = {
-            'cp': int(currencies['cp']),
-            'sp': int(currencies['sp']),
-            'ep': int(currencies['ep']),
-            'gp': int(currencies['gp']),
-            'pp': int(currencies['pp']),
-        }
-
-        return currency
 
     def __str__(self):
         return (f"Character name={self.name}, race={self.race}, str={self.str}({self.str_mod}), dex={self.dex}({self.dex_mod}), "

@@ -49,6 +49,27 @@ class TestCharacterModel(unittest.TestCase):
         # expected
         self.assertEqual(0, self.character.current_hit_points)
 
+    def test_add_currency_with_not_enough_money(self):
+        # conditions
+        self.character.currencies['gp'] = 10
+
+        # execution
+        rtn = self.character.add_currency(-15, 'gp')
+
+        # expected
+        self.assertFalse(rtn)
+
+    def test_add_currency_with_not_enough_money(self):
+        # conditions
+        self.character.currencies['cp'] = 10
+
+        # execution
+        rtn = self.character.add_currency(25, 'cp')
+
+        # expected
+        self.assertTrue(rtn)
+        self.assertEqual(self.character.currencies['cp'], 35)
+
     def __get_character(self):
         with open('tests/fixtures/character.json', 'r') as jd:
             json_data = json.loads(jd.read())

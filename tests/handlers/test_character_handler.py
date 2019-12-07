@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock, PropertyMock
 
 from models.character import Character
 from handlers.character import talk, import_character, link_character, get_status, ability_check, get_spells, \
-                               initiative_roll, short_rest_roll, get_weapons, set_hp, handler
+                               initiative_roll, short_rest_roll, get_weapons, set_hp, handler, set_currency
 
 CHARACTER_JSON = {
     'character': {
@@ -214,6 +214,40 @@ class TestCharacterHandler(unittest.TestCase):
         self.db.get_character_id.assert_called_with(self.campaign_id, 'foobar')
         self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer | Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
                         f'0 CP | 0 SP | 0 EP | 0 GP | 0 PP ```'), rtn)
+
+    def test_set_currency_without_params(self):
+        # execution
+        rtn = set_currency('/set_currency', '@foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('Invalid command. Usage: /set_currency <username|character> <currencies>', rtn)
+
+    def test_set_currency_with_invalid_equation(self):
+        # execution
+        rtn = set_currency('/set_currency', '10gp @foobar', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('Your request did not have a valid equation. Please use the currency notation (for example: 10gp, -20cp)', rtn)
+
+    def test_set_currency_with_not_enough_money(self):
+        # execution
+        rtn = set_currency('/set_currency', '@foobar -99999gp', self.db, self.chat_id, self.username)
+
+        # expected
+        self.assertEqual('You cannot afford -99999gp. Operation cancelled.', rtn)
+
+    def test_set_currency_with_valid_params(self):
+        # conditions
+        expected_character = self.__get_character()
+        expected_character.currencies['gp'] = 25
+
+        # execution
+        rtn = set_currency('/set_currency', '@foobar 25gp', self.db, self.chat_id, self.username)
+
+        # expected
+        self.db.set_char_currency.assert_called_with(expected_character.id, expected_character.currencies)
+        self.assertEqual((f'```\r\nAmarok Skullsorrow | Human Sorcerer | Level 1\r\nHP: 6/6 | XP: 25/300 \r\n'
+                        f'0 CP | 0 SP | 0 EP | 25 GP | 0 PP ```'), rtn)
 
     def test_set_hp_with_empty_params(self):
         # execution
